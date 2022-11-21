@@ -6,13 +6,16 @@ using UnityEngine;
 
 public class UseScript : MonoBehaviour
 {
+    public static UseScript Use { get; private set; }
+
     float MapResol;
-    [SerializeField] float StartDepthGround = 0.003f;
-    float DepthGround = 0.003f;
+    [SerializeField] float DepthGround = 0.003f;
 
     float HeightMapDefault;
 
-    public static bool CheckMove = true;
+    [HideInInspector] public bool ActivateSetHeight = false;
+
+    [HideInInspector] public bool CheckMove = true;
 
     [SerializeField] Terrain ter;
     [SerializeField] GameObject terrain;
@@ -30,6 +33,10 @@ public class UseScript : MonoBehaviour
     int PointX;
     int PointZ;
 
+    private void Awake()
+    {
+        Use = this;
+    }
 
     [Obsolete]
     void Start()
@@ -50,6 +57,12 @@ public class UseScript : MonoBehaviour
     [Obsolete]
     private void OnApplicationQuit()
     {
+        DefaultTerrain();
+    }
+
+    [Obsolete]
+    void DefaultTerrain()
+    {
         for (int i = 0; i < ter.terrainData.heightmapWidth; i++)
         {
             for (int j = 0; j < ter.terrainData.heightmapHeight; j++)
@@ -62,7 +75,9 @@ public class UseScript : MonoBehaviour
 
     void Update()
     {
-        RaycastHit HitObject;
+        if (ActivateSetHeight)
+            SetHeights();
+
         Ray CenterScreen = MovePlayer.Player.Povorot.GetComponent<Camera>().ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
         if (CheckMove == false)
@@ -76,7 +91,7 @@ public class UseScript : MonoBehaviour
             Hands.SetActive(true);
         }
 
-        if (Physics.Raycast(CenterScreen, out HitObject, DistanceGive))
+        if (Physics.Raycast(CenterScreen, out RaycastHit HitObject, DistanceGive))
         {
             if (HitObject.collider == terrain.GetComponent<TerrainCollider>())
             {
@@ -88,7 +103,9 @@ public class UseScript : MonoBehaviour
                     LopataInHand.SetActive(true);
                     if (Input.GetMouseButtonDown(0) && CheckMove)
                     {
-                        DOTween.Sequence()
+                        MovePlayer.Player.GetComponent<Animator>().Play("Digging");
+                        Debug.Log("PlayAnim");
+                        /*DOTween.Sequence()
                             .AppendCallback(CheckMoveVoidF)
                             .Append(LopataInHand.transform.DOLocalMove(endValue: new Vector3(0.3784409f, -0.05f, 0.15f), duration: 0.5f))
                             .Append(LopataInHand.transform.DOLocalRotate(endValue: new Vector3(28.554f, 7.702f, 27.442f), duration: 0.3f))
@@ -106,15 +123,14 @@ public class UseScript : MonoBehaviour
                             .AppendCallback(DirtFalse)
                             .Append(Dirt.transform.DOLocalMove(endValue: new Vector3(0.004f, 0.068f, 1.333f), duration: 0.01f))
                             .SetLoops(3)
-                            .AppendCallback(CheckMoveVoidT);
-                        DepthGround = StartDepthGround;
+                            .AppendCallback(CheckMoveVoidT);*/
                     }
                 }
             }
         }
     }
 
-    private void CheckMoveVoidT()
+    /*private void CheckMoveVoidT()
     {
         CheckMove = true;
     }
@@ -132,10 +148,11 @@ public class UseScript : MonoBehaviour
     private void DirtTrue()
     {
         Dirt.SetActive(true);
-    }
+    }*/
 
-    private void SetHeights()
+    public void SetHeights()
     {
+        Debug.Log("SetHeights");
         Heights[PointZ, PointX] = DepthGround;
         /*Heights[PointZ - 1, PointX - 1] = DepthGround;
         Heights[PointZ + 1, PointX + 1] = DepthGround;
@@ -146,6 +163,6 @@ public class UseScript : MonoBehaviour
         Heights[PointZ, PointX - 1] = DepthGround;
         Heights[PointZ, PointX + 1] = DepthGround;*/
         ter.terrainData.SetHeights(0, 0, Heights);
-        DepthGround -= 0.0001f;
+        //DepthGround -= 0.0001f;
     }
 }

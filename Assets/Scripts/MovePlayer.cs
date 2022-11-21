@@ -34,7 +34,7 @@ public class MovePlayer : MonoBehaviour
 
     void Update()
     {
-        if (UseScript.CheckMove)
+        if (UseScript.Use.CheckMove)
         {
             if (RootY)
                 moveY -= Input.GetAxis("Mouse Y") * SensY;
@@ -53,7 +53,7 @@ public class MovePlayer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (UseScript.CheckMove)
+        if (UseScript.Use.CheckMove)
         {
             if (gameObject.GetComponent<Rigidbody>().velocity.magnitude > speed)
                 gameObject.GetComponent<Rigidbody>().velocity = gameObject.GetComponent<Rigidbody>().velocity.normalized * speed;
