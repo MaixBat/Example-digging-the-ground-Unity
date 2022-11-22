@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class UseScript : MonoBehaviour
 {
+    //Не надо делать синглтон для каждого класса, тем более когда они в одном обьекте. 
+    //Тут будет достаточно поля с [SerializeField]
     public static UseScript Use { get; private set; }
 
     float MapResol;
