@@ -8,6 +8,8 @@ public class MovePlayer : MonoBehaviour
 {
     public static MovePlayer Player { get; private set; }
 
+    public bool CheckMove = true;
+
     public GameObject Povorot;
 
     [SerializeField] float speed = 5;
@@ -18,7 +20,7 @@ public class MovePlayer : MonoBehaviour
     public bool TestY = true, TestX = false;
     public Vector2 MinMaxY = new Vector2(-70, 70), MinMaxX = new Vector2(-360, 360);
 
-    private void Start()
+    private void Awake()
     {
         Player = this;
     }
@@ -34,7 +36,7 @@ public class MovePlayer : MonoBehaviour
 
     void Update()
     {
-        if (UseScript.Use.CheckMove)
+        if (CheckMove)
         {
             if (RootY)
                 moveY -= Input.GetAxis("Mouse Y") * SensY;
@@ -53,18 +55,10 @@ public class MovePlayer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (UseScript.Use.CheckMove)
+        if (CheckMove)
         {
-            if (gameObject.GetComponent<Rigidbody>().velocity.magnitude > speed)
-                gameObject.GetComponent<Rigidbody>().velocity = gameObject.GetComponent<Rigidbody>().velocity.normalized * speed;
-            if (Input.GetKey(KeyCode.W))
-                gameObject.GetComponent<Rigidbody>().AddForce(gameObject.transform.forward.normalized * speed, ForceMode.Impulse);
-            if (Input.GetKey(KeyCode.S))
-                gameObject.GetComponent<Rigidbody>().AddForce(-gameObject.transform.forward.normalized * speed, ForceMode.Impulse);
-            if (Input.GetKey(KeyCode.A))
-                gameObject.GetComponent<Rigidbody>().AddForce(-gameObject.transform.right.normalized * speed, ForceMode.Impulse);
-            if (Input.GetKey(KeyCode.D))
-                gameObject.GetComponent<Rigidbody>().AddForce(gameObject.transform.right.normalized * speed, ForceMode.Impulse);
+            Vector3 Move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+            transform.Translate(Move * speed * Time.fixedDeltaTime);
         }
     }
 }

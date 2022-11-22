@@ -6,16 +6,12 @@ using UnityEngine;
 
 public class UseScript : MonoBehaviour
 {
-    public static UseScript Use { get; private set; }
-
     float MapResol;
     [SerializeField] float DepthGround = 0.003f;
 
     float HeightMapDefault;
 
     [HideInInspector] public bool ActivateSetHeight = false;
-
-    [HideInInspector] public bool CheckMove = true;
 
     [SerializeField] Terrain ter;
     [SerializeField] GameObject terrain;
@@ -32,11 +28,6 @@ public class UseScript : MonoBehaviour
 
     int PointX;
     int PointZ;
-
-    private void Awake()
-    {
-        Use = this;
-    }
 
     [Obsolete]
     void Start()
@@ -80,7 +71,7 @@ public class UseScript : MonoBehaviour
 
         Ray CenterScreen = MovePlayer.Player.Povorot.GetComponent<Camera>().ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
-        if (CheckMove == false)
+        if (MovePlayer.Player.CheckMove == false)
         {
             Hands.SetActive(false);
             LopataInHand.SetActive(true);
@@ -101,7 +92,7 @@ public class UseScript : MonoBehaviour
                 {
                     Hands.SetActive(false);
                     LopataInHand.SetActive(true);
-                    if (Input.GetMouseButtonDown(0) && CheckMove)
+                    if (Input.GetMouseButtonDown(0) && MovePlayer.Player.CheckMove)
                     {
                         MovePlayer.Player.GetComponent<Animator>().Play("Digging");
                         Debug.Log("PlayAnim");
@@ -130,26 +121,6 @@ public class UseScript : MonoBehaviour
         }
     }
 
-    /*private void CheckMoveVoidT()
-    {
-        CheckMove = true;
-    }
-
-    private void CheckMoveVoidF()
-    {
-        CheckMove = false;
-    }
-
-    private void DirtFalse()
-    {
-        Dirt.SetActive(false);
-    }
-
-    private void DirtTrue()
-    {
-        Dirt.SetActive(true);
-    }*/
-
     public void SetHeights()
     {
         Debug.Log("SetHeights");
@@ -163,6 +134,5 @@ public class UseScript : MonoBehaviour
         Heights[PointZ, PointX - 1] = DepthGround;
         Heights[PointZ, PointX + 1] = DepthGround;*/
         ter.terrainData.SetHeights(0, 0, Heights);
-        //DepthGround -= 0.0001f;
     }
 }

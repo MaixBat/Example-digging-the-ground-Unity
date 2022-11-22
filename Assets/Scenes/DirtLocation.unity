@@ -7158,8 +7158,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e22e04c309d6747a4cbd2171ee97e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CheckMove: 1
   Povorot: {fileID: 963194225}
-  speed: 2.45
+  speed: 3.08
   SenX: 5
   SensY: 5
   RootX: 1
@@ -7292,7 +7293,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DepthGround: 0.0031
   ActivateSetHeight: 0
-  CheckMove: 1
   ter: {fileID: 1475457711}
   terrain: {fileID: 1475457709}
   LopataInHand: {fileID: 65287885}
