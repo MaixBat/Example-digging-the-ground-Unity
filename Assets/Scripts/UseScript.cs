@@ -7,15 +7,22 @@ using UnityEngine;
 public class UseScript : MonoBehaviour
 {
     float MapResol;
-    [SerializeField] float DepthGround = 0.003f;
+    public static float DepthGround = 0.0031f;
+    public static float DefaultDepthGround = 0.0031f;
 
     float HeightMapDefault;
 
-    [HideInInspector] public bool ActivateSetHeight = false;
+    bool NeedMove = false;
 
-    [SerializeField] Terrain ter;
+    float PointForMoveX;
+    float PointForMoveZ;
+
+    Vector3 TempPoint;
+
+    public static Terrain ter;
     [SerializeField] GameObject terrain;
 
+    [SerializeField] GameObject Lopata;
     [SerializeField] GameObject LopataInHand;
     [SerializeField] GameObject Hands;
     [SerializeField] GameObject Dirt;
@@ -24,14 +31,15 @@ public class UseScript : MonoBehaviour
     [SerializeField] float DistanceGive;
 
     float[,] StartHeights;
-    float[,] Heights;
+    public static float[,] Heights;
 
-    int PointX;
-    int PointZ;
+    public static int PointX;
+    public static int PointZ;
 
     [Obsolete]
     void Start()
     {
+        ter = terrain.GetComponent<Terrain>();
         MapResol = Convert.ToSingle(ter.terrainData.heightmapResolution) / 100;
         HeightMapDefault = ter.terrainData.GetHeights(0, 0, 1, 1)[0, 0];
         StartHeights = ter.terrainData.GetHeights(0, 0, ter.terrainData.heightmapWidth, ter.terrainData.heightmapHeight);
@@ -66,12 +74,11 @@ public class UseScript : MonoBehaviour
 
     void Update()
     {
-        if (ActivateSetHeight)
-            SetHeights();
+        Lopata.SetActive(false);
 
         Ray CenterScreen = MovePlayer.Player.Povorot.GetComponent<Camera>().ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
-        if (MovePlayer.Player.CheckMove == false)
+        if (!MovePlayer.Player.CheckMove)
         {
             Hands.SetActive(false);
             LopataInHand.SetActive(true);
@@ -82,20 +89,29 @@ public class UseScript : MonoBehaviour
             Hands.SetActive(true);
         }
 
+        if (NeedMove)
+            DistancePoint();
+
         if (Physics.Raycast(CenterScreen, out RaycastHit HitObject, DistanceGive))
         {
             if (HitObject.collider == terrain.GetComponent<TerrainCollider>())
             {
+                Lopata.transform.LookAt(gameObject.transform);
+                Lopata.transform.position = new Vector3(HitObject.point.x, Lopata.transform.position.y, HitObject.point.z);
                 PointX = Convert.ToInt32(HitObject.point.x * MapResol);
                 PointZ = Convert.ToInt32(HitObject.point.z * MapResol);
-                if (Heights[PointZ, PointX] >= HeightMapDefault)
+
+                if (Heights[PointZ, PointX] >= HeightMapDefault && Input.GetMouseButton(1))
                 {
-                    Hands.SetActive(false);
-                    LopataInHand.SetActive(true);
-                    if (Input.GetMouseButtonDown(0) && MovePlayer.Player.CheckMove)
+                    if (MovePlayer.Player.CheckMove)
+                        Lopata.SetActive(true);
+                    if (Input.GetKeyDown(KeyCode.E) && MovePlayer.Player.CheckMove)
                     {
-                        MovePlayer.Player.GetComponent<Animator>().Play("Digging");
-                        Debug.Log("PlayAnim");
+                        MovePlayer.Player.CheckMove = false;
+                        PointForMoveX = HitObject.point.x;
+                        PointForMoveZ = HitObject.point.z;
+                        TempPoint = HitObject.point;
+                        DistancePoint();
                         /*DOTween.Sequence()
                             .AppendCallback(CheckMoveVoidF)
                             .Append(LopataInHand.transform.DOLocalMove(endValue: new Vector3(0.3784409f, -0.05f, 0.15f), duration: 0.5f))
@@ -121,18 +137,32 @@ public class UseScript : MonoBehaviour
         }
     }
 
-    public void SetHeights()
+    public void DistancePoint()
     {
-        Debug.Log("SetHeights");
+        if (MovePlayer.Player.transform.position.x > PointForMoveX + 0.5f || MovePlayer.Player.transform.position.x < PointForMoveX - 0.5f || MovePlayer.Player.transform.position.z > PointForMoveZ + 0.5f || MovePlayer.Player.transform.position.z < PointForMoveZ - 0.5f)
+        {
+            NeedMove = true;
+            MovePlayer.Player.transform.position = Vector3.Lerp(MovePlayer.Player.transform.position, new Vector3(PointForMoveX, MovePlayer.Player.transform.position.y, PointForMoveZ), MovePlayer.Player.speed/100);
+        }
+        else
+        {
+            MovePlayer.Player.Povorot.transform.LookAt(TempPoint);
+            MovePlayer.Player.GetComponent<Animator>().Play("Digging");
+            NeedMove = false;
+        }
+    }
+
+    /*public void SetHeights()
+    {
         Heights[PointZ, PointX] = DepthGround;
-        /*Heights[PointZ - 1, PointX - 1] = DepthGround;
+        Heights[PointZ - 1, PointX - 1] = DepthGround;
         Heights[PointZ + 1, PointX + 1] = DepthGround;
         Heights[PointZ + 1, PointX - 1] = DepthGround;
         Heights[PointZ - 1, PointX + 1] = DepthGround;
         Heights[PointZ + 1, PointX] = DepthGround;
         Heights[PointZ - 1, PointX] = DepthGround;
         Heights[PointZ, PointX - 1] = DepthGround;
-        Heights[PointZ, PointX + 1] = DepthGround;*/
+        Heights[PointZ, PointX + 1] = DepthGround;
         ter.terrainData.SetHeights(0, 0, Heights);
-    }
+    }*/
 }

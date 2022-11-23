@@ -12,7 +12,7 @@ public class MovePlayer : MonoBehaviour
 
     public GameObject Povorot;
 
-    [SerializeField] float speed = 5;
+    public float speed = 5;
 
     public float SenX = 5, SensY = 5;
     float moveY, moveX;
@@ -52,6 +52,27 @@ public class MovePlayer : MonoBehaviour
         }
     }
 
+    public void CheckMoveTrue()
+    {
+        CheckMove = true;
+    }
+
+    public void CheckMoveFalse()
+    {
+        CheckMove = false;
+    }
+
+    public void SetHeights()
+    {
+        UseScript.Heights[UseScript.PointZ, UseScript.PointX] = UseScript.DepthGround;
+        UseScript.ter.terrainData.SetHeights(0, 0, UseScript.Heights);
+        UseScript.DepthGround -= 0.0001f;
+    }
+
+    public void DefaultDepth()
+    {
+        UseScript.DepthGround = UseScript.DefaultDepthGround;
+    }
 
     private void FixedUpdate()
     {
