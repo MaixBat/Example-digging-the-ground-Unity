@@ -27,6 +27,8 @@ public class UseScript : MonoBehaviour
     [SerializeField] GameObject Hands;
     [SerializeField] GameObject Dirt;
 
+    GameObject TempInHand;
+
 
     [SerializeField] float DistanceGive;
 
@@ -94,6 +96,18 @@ public class UseScript : MonoBehaviour
 
         if (Physics.Raycast(CenterScreen, out RaycastHit HitObject, DistanceGive))
         {
+            if (HitObject.collider != terrain.GetComponent<TerrainCollider>())
+            {
+                if (ControlButtons.Use() && MovePlayer.Player.CheckMove)
+                {
+                    if (TempInHand != null)
+                        Destroy(TempInHand);
+                    HitObject.collider.gameObject.transform.parent = Hands.transform;
+                    HitObject.collider.gameObject.transform.localPosition = new Vector3(0.527f, 8.286f, -1.737f);
+                    TempInHand = HitObject.collider.gameObject;
+                }
+            }
+
             if (HitObject.collider == terrain.GetComponent<TerrainCollider>())
             {
                 Lopata.transform.LookAt(gameObject.transform);
@@ -101,11 +115,11 @@ public class UseScript : MonoBehaviour
                 PointX = Convert.ToInt32(HitObject.point.x * MapResol);
                 PointZ = Convert.ToInt32(HitObject.point.z * MapResol);
 
-                if (Heights[PointZ, PointX] >= HeightMapDefault && Input.GetMouseButton(1))
+                if (Heights[PointZ, PointX] >= HeightMapDefault && ControlButtons.UseTarget())
                 {
                     if (MovePlayer.Player.CheckMove)
                         Lopata.SetActive(true);
-                    if (Input.GetKeyDown(KeyCode.E) && MovePlayer.Player.CheckMove)
+                    if (ControlButtons.Use() && MovePlayer.Player.CheckMove)
                     {
                         MovePlayer.Player.CheckMove = false;
                         PointForMoveX = HitObject.point.x;

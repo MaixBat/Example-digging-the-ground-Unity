@@ -78,8 +78,7 @@ public class MovePlayer : MonoBehaviour
     {
         if (CheckMove)
         {
-            Vector3 Move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-            transform.Translate(Move * speed * Time.fixedDeltaTime);
+            ControlButtons.MovePlayerMethod();
         }
     }
 }
