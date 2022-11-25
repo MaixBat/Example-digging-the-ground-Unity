@@ -22,6 +22,7 @@ public class UseScript : MonoBehaviour
     public static Terrain ter;
     [SerializeField] GameObject terrain;
 
+    [SerializeField] GameObject RayDirection;
     [SerializeField] GameObject Lopata;
     [SerializeField] GameObject LopataInHand;
     [SerializeField] GameObject Hands;
@@ -35,8 +36,11 @@ public class UseScript : MonoBehaviour
     float[,] StartHeights;
     public static float[,] Heights;
 
-    public static int PointX;
-    public static int PointZ;
+    int PointX;
+    int PointZ;
+
+    public static int PointXStatic;
+    public static int PointZStatic;
 
     [Obsolete]
     void Start()
@@ -76,9 +80,12 @@ public class UseScript : MonoBehaviour
 
     void Update()
     {
+        RayDirection.SetActive(false);
         Lopata.SetActive(false);
 
-        Ray CenterScreen = MovePlayer.Player.Povorot.GetComponent<Camera>().ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        Ray CenterScreen = new Ray(RayDirection.transform.position, RayDirection.transform.forward);
+        //Debug.DrawRay(RayDirection.transform.position, RayDirection.transform.forward);
+        //Ray CenterScreen = MovePlayer.Player.Povorot.GetComponent<Camera>().ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
         if (!MovePlayer.Player.CheckMove)
         {
@@ -98,13 +105,17 @@ public class UseScript : MonoBehaviour
         {
             if (HitObject.collider != terrain.GetComponent<TerrainCollider>())
             {
-                if (ControlButtons.Use() && MovePlayer.Player.CheckMove)
+                if (ControlButtons.UseTarget())
                 {
-                    if (TempInHand != null)
-                        Destroy(TempInHand);
-                    HitObject.collider.gameObject.transform.parent = Hands.transform;
-                    HitObject.collider.gameObject.transform.localPosition = new Vector3(0.527f, 8.286f, -1.737f);
-                    TempInHand = HitObject.collider.gameObject;
+                    RayDirection.SetActive(true);
+                    if (ControlButtons.Use() && MovePlayer.Player.CheckMove)
+                    {
+                        if (TempInHand != null)
+                            Destroy(TempInHand);
+                        HitObject.collider.gameObject.transform.parent = Hands.transform;
+                        HitObject.collider.gameObject.transform.localPosition = new Vector3(0.527f, 8.286f, -1.737f);
+                        TempInHand = HitObject.collider.gameObject;
+                    }
                 }
             }
 
@@ -118,12 +129,17 @@ public class UseScript : MonoBehaviour
                 if (Heights[PointZ, PointX] >= HeightMapDefault && ControlButtons.UseTarget())
                 {
                     if (MovePlayer.Player.CheckMove)
+                    {
                         Lopata.SetActive(true);
+                        RayDirection.SetActive(true);
+                    }
                     if (ControlButtons.Use() && MovePlayer.Player.CheckMove)
                     {
                         MovePlayer.Player.CheckMove = false;
                         PointForMoveX = HitObject.point.x;
                         PointForMoveZ = HitObject.point.z;
+                        PointXStatic = Convert.ToInt32(PointForMoveX * MapResol);
+                        PointZStatic = Convert.ToInt32(PointForMoveZ * MapResol);
                         TempPoint = HitObject.point;
                         DistancePoint();
                         /*DOTween.Sequence()

@@ -64,7 +64,7 @@ public class MovePlayer : MonoBehaviour
 
     public void SetHeights()
     {
-        UseScript.Heights[UseScript.PointZ, UseScript.PointX] = UseScript.DepthGround;
+        UseScript.Heights[UseScript.PointZStatic, UseScript.PointXStatic] = UseScript.DepthGround;
         UseScript.ter.terrainData.SetHeights(0, 0, UseScript.Heights);
         UseScript.DepthGround -= 0.0001f;
     }
