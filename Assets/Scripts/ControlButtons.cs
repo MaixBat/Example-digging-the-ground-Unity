@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class ControlButtons : MonoBehaviour
 {
-    public static void MovePlayerMethod()
+    IControl control;
+
+    private void Awake()
     {
-        Vector3 Move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        MovePlayer.Player.transform.Translate(Move * MovePlayer.Player.speed * Time.fixedDeltaTime);
+        control = gameObject.GetComponent<IControl>();
     }
 
-    public static bool Use()
+    public void MovePlayerMethod()
+    {
+        control.Move();
+    }
+
+    public bool Use()
     {
         if (Input.GetKeyDown(KeyCode.E))
             return true;

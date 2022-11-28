@@ -7,6 +7,7 @@ using UnityEngine;
 public class MovePlayer : MonoBehaviour
 {
     public static MovePlayer Player { get; private set; }
+    public ControlButtons CB;
 
     public bool CheckMove = true;
 
@@ -78,7 +79,7 @@ public class MovePlayer : MonoBehaviour
     {
         if (CheckMove)
         {
-            ControlButtons.MovePlayerMethod();
+            CB.MovePlayerMethod();
         }
     }
 }

@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class UseScript : MonoBehaviour
 {
+    ControlButtons CB;
+
     float MapResol;
     public static float DepthGround = 0.0031f;
     public static float DefaultDepthGround = 0.0031f;
@@ -41,6 +43,11 @@ public class UseScript : MonoBehaviour
 
     public static int PointXStatic;
     public static int PointZStatic;
+
+    private void Awake()
+    {
+        CB = gameObject.GetComponent<ControlButtons>();
+    }
 
     [Obsolete]
     void Start()
@@ -108,7 +115,7 @@ public class UseScript : MonoBehaviour
                 if (ControlButtons.UseTarget())
                 {
                     RayDirection.SetActive(true);
-                    if (ControlButtons.Use() && MovePlayer.Player.CheckMove)
+                    if (CB.Use() && MovePlayer.Player.CheckMove)
                     {
                         if (TempInHand != null)
                             Destroy(TempInHand);
@@ -133,7 +140,7 @@ public class UseScript : MonoBehaviour
                         Lopata.SetActive(true);
                         RayDirection.SetActive(true);
                     }
-                    if (ControlButtons.Use() && MovePlayer.Player.CheckMove)
+                    if (CB.Use() && MovePlayer.Player.CheckMove)
                     {
                         MovePlayer.Player.CheckMove = false;
                         PointForMoveX = HitObject.point.x;
