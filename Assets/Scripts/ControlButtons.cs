@@ -23,7 +23,7 @@ public class ControlButtons : MonoBehaviour
         return false;
     }
 
-    public static bool UseTarget()
+    public bool UseTarget()
     {
         if (Input.GetMouseButton(1))
             return true;

@@ -14,19 +14,14 @@ public class UseScript : MonoBehaviour
 
     float HeightMapDefault;
 
-    bool NeedMove = false;
-
     float PointForMoveX;
     float PointForMoveZ;
-
-    Vector3 TempPoint;
 
     public static Terrain ter;
     [SerializeField] GameObject terrain;
 
     [SerializeField] GameObject RayDirection;
     [SerializeField] GameObject Lopata;
-    [SerializeField] GameObject LopataInHand;
     [SerializeField] GameObject Hands;
     [SerializeField] GameObject Dirt;
 
@@ -88,31 +83,20 @@ public class UseScript : MonoBehaviour
     void Update()
     {
         RayDirection.SetActive(false);
-        Lopata.SetActive(false);
+        if (!MovePlayer.Player.CheckMove)
+            Lopata.SetActive(true);
+        else
+            Lopata.SetActive(false);
 
         Ray CenterScreen = new Ray(RayDirection.transform.position, RayDirection.transform.forward);
         //Debug.DrawRay(RayDirection.transform.position, RayDirection.transform.forward);
         //Ray CenterScreen = MovePlayer.Player.Povorot.GetComponent<Camera>().ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
-        if (!MovePlayer.Player.CheckMove)
-        {
-            Hands.SetActive(false);
-            LopataInHand.SetActive(true);
-        }
-        else
-        {
-            LopataInHand.SetActive(false);
-            Hands.SetActive(true);
-        }
-
-        if (NeedMove)
-            DistancePoint();
-
         if (Physics.Raycast(CenterScreen, out RaycastHit HitObject, DistanceGive))
         {
             if (HitObject.collider != terrain.GetComponent<TerrainCollider>())
             {
-                if (ControlButtons.UseTarget())
+                if (CB.UseTarget())
                 {
                     RayDirection.SetActive(true);
                     if (CB.Use() && MovePlayer.Player.CheckMove)
@@ -128,12 +112,12 @@ public class UseScript : MonoBehaviour
 
             if (HitObject.collider == terrain.GetComponent<TerrainCollider>())
             {
-                Lopata.transform.LookAt(gameObject.transform);
+                Lopata.transform.LookAt(MovePlayer.Player.transform);
                 Lopata.transform.position = new Vector3(HitObject.point.x, Lopata.transform.position.y, HitObject.point.z);
                 PointX = Convert.ToInt32(HitObject.point.x * MapResol);
                 PointZ = Convert.ToInt32(HitObject.point.z * MapResol);
 
-                if (Heights[PointZ, PointX] >= HeightMapDefault && ControlButtons.UseTarget())
+                if (Heights[PointZ, PointX] >= HeightMapDefault && CB.UseTarget())
                 {
                     if (MovePlayer.Player.CheckMove)
                     {
@@ -147,8 +131,8 @@ public class UseScript : MonoBehaviour
                         PointForMoveZ = HitObject.point.z;
                         PointXStatic = Convert.ToInt32(PointForMoveX * MapResol);
                         PointZStatic = Convert.ToInt32(PointForMoveZ * MapResol);
-                        TempPoint = HitObject.point;
-                        DistancePoint();
+                        Lopata.transform.position = new Vector3(PointForMoveX, Lopata.transform.position.y, PointForMoveZ);
+                        Lopata.GetComponent<Animator>().Play("Digging");
                         /*DOTween.Sequence()
                             .AppendCallback(CheckMoveVoidF)
                             .Append(LopataInHand.transform.DOLocalMove(endValue: new Vector3(0.3784409f, -0.05f, 0.15f), duration: 0.5f))
@@ -171,21 +155,6 @@ public class UseScript : MonoBehaviour
                     }
                 }
             }
-        }
-    }
-
-    public void DistancePoint()
-    {
-        if (MovePlayer.Player.transform.position.x > PointForMoveX + 0.5f || MovePlayer.Player.transform.position.x < PointForMoveX - 0.5f || MovePlayer.Player.transform.position.z > PointForMoveZ + 0.5f || MovePlayer.Player.transform.position.z < PointForMoveZ - 0.5f)
-        {
-            NeedMove = true;
-            MovePlayer.Player.transform.position = Vector3.Lerp(MovePlayer.Player.transform.position, new Vector3(PointForMoveX, MovePlayer.Player.transform.position.y, PointForMoveZ), MovePlayer.Player.speed/100);
-        }
-        else
-        {
-            MovePlayer.Player.Povorot.transform.LookAt(TempPoint);
-            MovePlayer.Player.GetComponent<Animator>().Play("Digging");
-            NeedMove = false;
         }
     }
 

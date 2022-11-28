@@ -53,28 +53,6 @@ public class MovePlayer : MonoBehaviour
         }
     }
 
-    public void CheckMoveTrue()
-    {
-        CheckMove = true;
-    }
-
-    public void CheckMoveFalse()
-    {
-        CheckMove = false;
-    }
-
-    public void SetHeights()
-    {
-        UseScript.Heights[UseScript.PointZStatic, UseScript.PointXStatic] = UseScript.DepthGround;
-        UseScript.ter.terrainData.SetHeights(0, 0, UseScript.Heights);
-        UseScript.DepthGround -= 0.0001f;
-    }
-
-    public void DefaultDepth()
-    {
-        UseScript.DepthGround = UseScript.DefaultDepthGround;
-    }
-
     private void FixedUpdate()
     {
         if (CheckMove)
