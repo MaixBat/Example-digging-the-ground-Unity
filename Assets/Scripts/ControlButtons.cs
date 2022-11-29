@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ControlButtons : MonoBehaviour
 {
@@ -16,14 +17,13 @@ public class ControlButtons : MonoBehaviour
         control.Move();
     }
 
-    public bool Use(GameObject gameobj)
+    public UnityAction Use(GameObject gameobj)
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            gameobj.GetComponent<IObject>().Info();
-            return true;
+            return gameobj.GetComponent<IObject>().Info();
         }
-        return false;
+        return null;
     }
 
     public bool Use()

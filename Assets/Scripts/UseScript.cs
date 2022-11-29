@@ -3,9 +3,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class UseScript : MonoBehaviour
 {
+    UnityEvent InfoObj = new UnityEvent();
+
     ControlButtons CB;
 
     float MapResol;
@@ -24,7 +27,6 @@ public class UseScript : MonoBehaviour
     [SerializeField] GameObject RayDirection;
     [SerializeField] GameObject Lopata;
     [SerializeField] GameObject Hands;
-    [SerializeField] GameObject Dirt;
 
     GameObject TempInHand;
 
@@ -100,8 +102,11 @@ public class UseScript : MonoBehaviour
                 if (CB.UseTarget())
                 {
                     RayDirection.SetActive(true);
-                    if (CB.Use(HitObject.collider.gameObject) && MovePlayer.Player.CheckMove)
+                    if (CB.Use(HitObject.collider.gameObject) != null && MovePlayer.Player.CheckMove)
                     {
+                        //Debug.Log(CB.Use(HitObject.collider.gameObject));
+                        InfoObj.AddListener(CB.Use(HitObject.collider.gameObject));
+                        InfoObj.Invoke();
                         if (TempInHand != null)
                             Destroy(TempInHand);
                         HitObject.collider.gameObject.transform.parent = Hands.transform;

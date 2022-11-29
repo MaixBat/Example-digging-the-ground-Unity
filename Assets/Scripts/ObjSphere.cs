@@ -1,11 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ObjSphere : MonoBehaviour, IObject
 {
-    public void Info()
+    UnityAction ActSound;
+
+    [SerializeField] AudioClip clip;
+
+    private void Awake()
     {
-        Debug.Log("Øàð");
+        ActSound += Sound;
+        ActSound += Name;
+    }
+
+    public UnityAction Info()
+    {
+        return ActSound;
+    }
+
+    public void Sound()
+    {
+        gameObject.GetComponent<AudioSource>().PlayOneShot(clip);
+    }
+
+    public void Name()
+    {
+        Debug.Log(gameObject.name);
     }
 }
