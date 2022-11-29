@@ -20,6 +20,7 @@ public class UseScript : MonoBehaviour
     public static Terrain ter;
     [SerializeField] GameObject terrain;
 
+    [SerializeField] GameObject LocalTake;
     [SerializeField] GameObject RayDirection;
     [SerializeField] GameObject Lopata;
     [SerializeField] GameObject Hands;
@@ -104,7 +105,7 @@ public class UseScript : MonoBehaviour
                         if (TempInHand != null)
                             Destroy(TempInHand);
                         HitObject.collider.gameObject.transform.parent = Hands.transform;
-                        HitObject.collider.gameObject.transform.localPosition = new Vector3(0.527f, 8.286f, -1.737f);
+                        HitObject.collider.gameObject.transform.localPosition = LocalTake.transform.localPosition;
                         TempInHand = HitObject.collider.gameObject;
                     }
                 }
