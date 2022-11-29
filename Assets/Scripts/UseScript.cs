@@ -107,6 +107,7 @@ public class UseScript : MonoBehaviour
                         //Debug.Log(CB.Use(HitObject.collider.gameObject));
                         InfoObj.AddListener(CB.Use(HitObject.collider.gameObject));
                         InfoObj.Invoke();
+                        InfoObj.RemoveAllListeners();
                         if (TempInHand != null)
                             Destroy(TempInHand);
                         HitObject.collider.gameObject.transform.parent = Hands.transform;
