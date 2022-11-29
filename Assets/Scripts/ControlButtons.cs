@@ -16,10 +16,22 @@ public class ControlButtons : MonoBehaviour
         control.Move();
     }
 
+    public bool Use(GameObject gameobj)
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            gameobj.GetComponent<IObject>().Info();
+            return true;
+        }
+        return false;
+    }
+
     public bool Use()
     {
         if (Input.GetKeyDown(KeyCode.E))
+        {
             return true;
+        }
         return false;
     }
 

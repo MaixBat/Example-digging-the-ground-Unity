@@ -99,7 +99,7 @@ public class UseScript : MonoBehaviour
                 if (CB.UseTarget())
                 {
                     RayDirection.SetActive(true);
-                    if (CB.Use() && MovePlayer.Player.CheckMove)
+                    if (CB.Use(HitObject.collider.gameObject) && MovePlayer.Player.CheckMove)
                     {
                         if (TempInHand != null)
                             Destroy(TempInHand);
