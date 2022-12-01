@@ -1,65 +1,61 @@
-using DG.Tweening;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class UseScript : MonoBehaviour
 {
-    UnityEvent InfoObj = new UnityEvent();
+    event Action InfoObj;
 
-    ControlButtons CB;
+    ControlButtons _CB;
 
-    float MapResol;
+    float _mapResol;
     public static float DepthGround = 0.0031f;
     public static float DefaultDepthGround = 0.0031f;
 
-    float HeightMapDefault;
+    float _heightMapDefault;
 
-    float PointForMoveX;
-    float PointForMoveZ;
+    float _pointForMoveX;
+    float _pointForMoveZ;
 
-    public static Terrain ter;
-    [SerializeField] GameObject terrain;
+    public static Terrain Ter;
+    [SerializeField] GameObject _terrain;
 
-    [SerializeField] GameObject LocalTake;
-    [SerializeField] GameObject RayDirection;
-    [SerializeField] GameObject Lopata;
-    [SerializeField] GameObject Hands;
+    [SerializeField] GameObject _localTake;
+    [SerializeField] GameObject _rayDirection;
+    [SerializeField] GameObject _lopata;
+    [SerializeField] GameObject _hands;
 
-    GameObject TempInHand;
+    GameObject _tempInHand;
 
 
-    [SerializeField] float DistanceGive;
+    [SerializeField] float _distanceGive;
 
-    float[,] StartHeights;
+    float[,] _startHeights;
     public static float[,] Heights;
 
-    int PointX;
-    int PointZ;
+    int _pointX;
+    int _pointZ;
 
     public static int PointXStatic;
     public static int PointZStatic;
 
     private void Awake()
     {
-        CB = gameObject.GetComponent<ControlButtons>();
+        _CB = gameObject.GetComponent<ControlButtons>();
     }
 
     [Obsolete]
     void Start()
     {
-        ter = terrain.GetComponent<Terrain>();
-        MapResol = Convert.ToSingle(ter.terrainData.heightmapResolution) / 100;
-        HeightMapDefault = ter.terrainData.GetHeights(0, 0, 1, 1)[0, 0];
-        StartHeights = ter.terrainData.GetHeights(0, 0, ter.terrainData.heightmapWidth, ter.terrainData.heightmapHeight);
-        Heights = StartHeights;
-        for (int i = 0; i < ter.terrainData.heightmapWidth; i++)
+        Ter = _terrain.GetComponent<Terrain>();
+        _mapResol = Convert.ToSingle(Ter.terrainData.heightmapResolution) / 100;
+        _heightMapDefault = Ter.terrainData.GetHeights(0, 0, 1, 1)[0, 0];
+        _startHeights = Ter.terrainData.GetHeights(0, 0, Ter.terrainData.heightmapWidth, Ter.terrainData.heightmapHeight);
+        Heights = _startHeights;
+        for (int i = 0; i < Ter.terrainData.heightmapWidth; i++)
         {
-            for (int j = 0; j < ter.terrainData.heightmapHeight; j++)
+            for (int j = 0; j < Ter.terrainData.heightmapHeight; j++)
             {
-                Heights[i, j] = StartHeights[i, j];
+                Heights[i, j] = _startHeights[i, j];
             }
         }
     }
@@ -73,73 +69,72 @@ public class UseScript : MonoBehaviour
     [Obsolete]
     void DefaultTerrain()
     {
-        for (int i = 0; i < ter.terrainData.heightmapWidth; i++)
+        for (int i = 0; i < Ter.terrainData.heightmapWidth; i++)
         {
-            for (int j = 0; j < ter.terrainData.heightmapHeight; j++)
+            for (int j = 0; j < Ter.terrainData.heightmapHeight; j++)
             {
-                StartHeights[i, j] = HeightMapDefault;
+                _startHeights[i, j] = _heightMapDefault;
             }
         }
-        ter.terrainData.SetHeights(0, 0, StartHeights);
+        Ter.terrainData.SetHeights(0, 0, _startHeights);
     }
 
     void Update()
     {
-        RayDirection.SetActive(false);
+        _rayDirection.SetActive(false);
         if (!MovePlayer.Player.CheckMove)
-            Lopata.SetActive(true);
+            _lopata.SetActive(true);
         else
-            Lopata.SetActive(false);
+            _lopata.SetActive(false);
 
-        Ray CenterScreen = new Ray(RayDirection.transform.position, RayDirection.transform.forward);
-        //Debug.DrawRay(RayDirection.transform.position, RayDirection.transform.forward);
-        //Ray CenterScreen = MovePlayer.Player.Povorot.GetComponent<Camera>().ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        Ray _centerScreen = new Ray(_rayDirection.transform.position, _rayDirection.transform.forward);
 
-        if (Physics.Raycast(CenterScreen, out RaycastHit HitObject, DistanceGive))
+        if (Physics.Raycast(_centerScreen, out RaycastHit _hitObject, _distanceGive))
         {
-            if (HitObject.collider != terrain.GetComponent<TerrainCollider>())
+            if (_hitObject.collider != _terrain.GetComponent<TerrainCollider>())
             {
-                if (CB.UseTarget())
+                if (_CB.UseTarget())
                 {
-                    RayDirection.SetActive(true);
-                    if (CB.Use(HitObject.collider.gameObject) != null && MovePlayer.Player.CheckMove)
+                    _rayDirection.SetActive(true);
+                    if (_CB.Use() && MovePlayer.Player.CheckMove)
                     {
-                        //Debug.Log(CB.Use(HitObject.collider.gameObject));
-                        InfoObj.AddListener(CB.Use(HitObject.collider.gameObject));
-                        InfoObj.Invoke();
-                        InfoObj.RemoveAllListeners();
-                        if (TempInHand != null)
-                            Destroy(TempInHand);
-                        HitObject.collider.gameObject.transform.parent = Hands.transform;
-                        HitObject.collider.gameObject.transform.localPosition = LocalTake.transform.localPosition;
-                        TempInHand = HitObject.collider.gameObject;
+                        InfoObj += _hitObject.collider.gameObject.GetComponent<IObject>().PlaySound;
+                        InfoObj += _hitObject.collider.gameObject.GetComponent<IObject>().TakeName;
+                        InfoObj?.Invoke();
+                        InfoObj -= _hitObject.collider.gameObject.GetComponent<IObject>().PlaySound;
+                        InfoObj -= _hitObject.collider.gameObject.GetComponent<IObject>().TakeName;
+                        if (_tempInHand != null)
+                            Destroy(_tempInHand);
+                        _hitObject.collider.gameObject.transform.parent = _hands.transform;
+                        _hitObject.collider.gameObject.transform.localPosition = _localTake.transform.localPosition;
+                        _tempInHand = _hitObject.collider.gameObject;
                     }
                 }
             }
 
-            if (HitObject.collider == terrain.GetComponent<TerrainCollider>())
+            if (_hitObject.collider == _terrain.GetComponent<TerrainCollider>())
             {
-                Lopata.transform.LookAt(MovePlayer.Player.transform);
-                Lopata.transform.position = new Vector3(HitObject.point.x, Lopata.transform.position.y, HitObject.point.z);
-                PointX = Convert.ToInt32(HitObject.point.x * MapResol);
-                PointZ = Convert.ToInt32(HitObject.point.z * MapResol);
+                _lopata.transform.LookAt(MovePlayer.Player.transform);
+                _lopata.transform.position = new Vector3(_hitObject.point.x, _lopata.transform.position.y, _hitObject.point.z);
+                _pointX = Convert.ToInt32(_hitObject.point.x * _mapResol);
+                _pointZ = Convert.ToInt32(_hitObject.point.z * _mapResol);
 
-                if (Heights[PointZ, PointX] >= HeightMapDefault && CB.UseTarget())
+                if (Heights[_pointZ, _pointX] >= _heightMapDefault && _CB.UseTarget())
                 {
                     if (MovePlayer.Player.CheckMove)
                     {
-                        Lopata.SetActive(true);
-                        RayDirection.SetActive(true);
+                        _lopata.SetActive(true);
+                        _rayDirection.SetActive(true);
                     }
-                    if (CB.Use() && MovePlayer.Player.CheckMove)
+                    if (_CB.Use() && MovePlayer.Player.CheckMove)
                     {
                         MovePlayer.Player.CheckMove = false;
-                        PointForMoveX = HitObject.point.x;
-                        PointForMoveZ = HitObject.point.z;
-                        PointXStatic = Convert.ToInt32(PointForMoveX * MapResol);
-                        PointZStatic = Convert.ToInt32(PointForMoveZ * MapResol);
-                        Lopata.transform.position = new Vector3(PointForMoveX, Lopata.transform.position.y, PointForMoveZ);
-                        Lopata.GetComponent<Animator>().Play("Digging");
+                        _pointForMoveX = _hitObject.point.x;
+                        _pointForMoveZ = _hitObject.point.z;
+                        PointXStatic = Convert.ToInt32(_pointForMoveX * _mapResol);
+                        PointZStatic = Convert.ToInt32(_pointForMoveZ * _mapResol);
+                        _lopata.transform.position = new Vector3(_pointForMoveX, _lopata.transform.position.y, _pointForMoveZ);
+                        _lopata.GetComponent<Animator>().Play("Digging");
                         /*DOTween.Sequence()
                             .AppendCallback(CheckMoveVoidF)
                             .Append(LopataInHand.transform.DOLocalMove(endValue: new Vector3(0.3784409f, -0.05f, 0.15f), duration: 0.5f))

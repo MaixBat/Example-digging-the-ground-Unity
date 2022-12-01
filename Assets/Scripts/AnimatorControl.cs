@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimatorControl : MonoBehaviour
 {
-    public LopataColor lc;
+    public LopataColor _colorChangeLopata;
     public void CheckMoveTrue()
     {
         MovePlayer.Player.CheckMove = true;
@@ -18,21 +16,21 @@ public class AnimatorControl : MonoBehaviour
     public void SetHeights()
     {
         UseScript.Heights[UseScript.PointZStatic, UseScript.PointXStatic] = UseScript.DepthGround;
-        UseScript.ter.terrainData.SetHeights(0, 0, UseScript.Heights);
+        UseScript.Ter.terrainData.SetHeights(0, 0, UseScript.Heights);
         UseScript.DepthGround -= 0.0001f;
     }
 
-    public void ChangeColorOnT()
+    public void ChangeColorOnTransparent()
     {
-        lc.ChangeT();
+        _colorChangeLopata.ChangeOnTransparent();
     }
 
-    public void ChangeColorOnN()
+    public void ChangeColorOnNormal()
     {
-        lc.ChangeN();
+        _colorChangeLopata.ChangeOnNormal();
     }
 
-    public void DefaultDepth()
+    public void SetDefaultDepth()
     {
         UseScript.DepthGround = UseScript.DefaultDepthGround;
     }

@@ -2282,7 +2282,7 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 0
-    functionName: ChangeColorOnN
+    functionName: ChangeColorOnNormal
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -2310,14 +2310,14 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 6.6
-    functionName: DefaultDepth
+    functionName: SetDefaultDepth
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 7.5
-    functionName: ChangeColorOnT
+    functionName: ChangeColorOnTransparent
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

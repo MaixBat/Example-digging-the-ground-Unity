@@ -1,29 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class ControlButtons : MonoBehaviour
 {
-    IControl control;
+    IControl _control;
 
     private void Awake()
     {
-        control = gameObject.GetComponent<IControl>();
+        _control = gameObject.GetComponent<IControl>();
     }
 
     public void MovePlayerMethod()
     {
-        control.Move();
-    }
-
-    public UnityAction Use(GameObject gameobj)
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            return gameobj.GetComponent<IObject>().Info();
-        }
-        return null;
+        _control.Move();
     }
 
     public bool Use()

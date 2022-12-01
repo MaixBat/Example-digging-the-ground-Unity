@@ -433,10 +433,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 425869452}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93e5bdbed8ee07544a52c6a50faa50ee, type: 3}
+  m_Script: {fileID: 11500000, guid: 9bf23bceab6ff6640b1ba2c790c3cd4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: 3454cd6533528984d8c2c5a4ae76e1ce, type: 3}
+  _clip: {fileID: 8300000, guid: 6619aaf61fd0ff54db28ebf3f572efdf, type: 3}
 --- !u!82 &425869458
 AudioSource:
   m_ObjectHideFlags: 0
@@ -599,7 +599,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd6a7544e9ba99545b45f680639483c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lc: {fileID: 1883320661}
+  _colorChangeLopata: {fileID: 1883320661}
 --- !u!1 &533022366
 GameObject:
   m_ObjectHideFlags: 0
@@ -5609,7 +5609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bf23bceab6ff6640b1ba2c790c3cd4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: 6619aaf61fd0ff54db28ebf3f572efdf, type: 3}
+  _clip: {fileID: 8300000, guid: 3454cd6533528984d8c2c5a4ae76e1ce, type: 3}
 --- !u!82 &627646723
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5908,10 +5908,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 805135677}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93e5bdbed8ee07544a52c6a50faa50ee, type: 3}
+  m_Script: {fileID: 11500000, guid: 9bf23bceab6ff6640b1ba2c790c3cd4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: 3454cd6533528984d8c2c5a4ae76e1ce, type: 3}
+  _clip: {fileID: 8300000, guid: 6619aaf61fd0ff54db28ebf3f572efdf, type: 3}
 --- !u!82 &805135683
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6448,7 +6448,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bf23bceab6ff6640b1ba2c790c3cd4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: 6619aaf61fd0ff54db28ebf3f572efdf, type: 3}
+  _clip: {fileID: 8300000, guid: 3454cd6533528984d8c2c5a4ae76e1ce, type: 3}
 --- !u!82 &1635349864
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6723,7 +6723,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bf23bceab6ff6640b1ba2c790c3cd4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: 6619aaf61fd0ff54db28ebf3f572efdf, type: 3}
+  _clip: {fileID: 8300000, guid: 3454cd6533528984d8c2c5a4ae76e1ce, type: 3}
 --- !u!82 &1719850014
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6931,7 +6931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bf23bceab6ff6640b1ba2c790c3cd4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: 6619aaf61fd0ff54db28ebf3f572efdf, type: 3}
+  _clip: {fileID: 8300000, guid: 3454cd6533528984d8c2c5a4ae76e1ce, type: 3}
 --- !u!82 &1731080698
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7117,18 +7117,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e22e04c309d6747a4cbd2171ee97e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CB: {fileID: 1883320659}
+  _CB: {fileID: 1883320659}
   CheckMove: 1
-  Povorot: {fileID: 963194225}
-  speed: 3.08
-  SenX: 5
-  SensY: 5
-  RootX: 1
-  RootY: 1
-  TestY: 1
-  TestX: 0
-  MinMaxY: {x: -70, y: 70}
-  MinMaxX: {x: -360, y: 360}
+  Camera: {fileID: 963194225}
+  Speed: 2.35
+  _sensX: 5
+  _sensY: 5
+  _rootX: 1
+  _rootY: 1
+  _testY: 1
+  _testX: 0
+  _minMaxY: {x: -70, y: 70}
+  _minMaxX: {x: -360, y: 360}
 --- !u!33 &1835296430
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -7201,12 +7201,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f8946d1bf87f74ba2587b8a366e0b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrain: {fileID: 1475457709}
-  LocalTake: {fileID: 93234837}
-  RayDirection: {fileID: 207210946}
-  Lopata: {fileID: 438193775}
-  Hands: {fileID: 6680290125564626058}
-  DistanceGive: 1.5
+  _terrain: {fileID: 1475457709}
+  _localTake: {fileID: 93234837}
+  _rayDirection: {fileID: 207210946}
+  _lopata: {fileID: 438193775}
+  _hands: {fileID: 2094049804732291838}
+  _distanceGive: 1.5
 --- !u!4 &1883320658
 Transform:
   m_ObjectHideFlags: 0
@@ -7260,8 +7260,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LopataPart1: {fileID: 1453445870}
   LopataPart2: {fileID: 1200251038}
-  Transparent: {fileID: 2100000, guid: 8a7fead789f709b4ba61e16d2bebb8f1, type: 2}
-  Normal: {fileID: 2100000, guid: 4281266745fc63042bcc9e49017a7948, type: 2}
+  _transparent: {fileID: 2100000, guid: 8a7fead789f709b4ba61e16d2bebb8f1, type: 2}
+  _normal: {fileID: 2100000, guid: 4281266745fc63042bcc9e49017a7948, type: 2}
 --- !u!1 &1948146170
 GameObject:
   m_ObjectHideFlags: 0
@@ -7370,10 +7370,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1948146170}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93e5bdbed8ee07544a52c6a50faa50ee, type: 3}
+  m_Script: {fileID: 11500000, guid: 9bf23bceab6ff6640b1ba2c790c3cd4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: 3454cd6533528984d8c2c5a4ae76e1ce, type: 3}
+  _clip: {fileID: 8300000, guid: 6619aaf61fd0ff54db28ebf3f572efdf, type: 3}
 --- !u!82 &1948146176
 AudioSource:
   m_ObjectHideFlags: 0

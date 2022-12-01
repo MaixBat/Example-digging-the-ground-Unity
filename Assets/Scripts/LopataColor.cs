@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LopataColor : MonoBehaviour
@@ -7,18 +5,18 @@ public class LopataColor : MonoBehaviour
     public GameObject LopataPart1;
     public GameObject LopataPart2;
 
-    [SerializeField] Material Transparent;
-    [SerializeField] Material Normal;
+    [SerializeField] Material _transparent;
+    [SerializeField] Material _normal;
 
-    public void ChangeT()
+    public void ChangeOnTransparent()
     {
-        LopataPart1.GetComponent<Renderer>().material = Transparent;
-        LopataPart2.GetComponent<Renderer>().material = Transparent;
+        LopataPart1.GetComponent<Renderer>().material = _transparent;
+        LopataPart2.GetComponent<Renderer>().material = _transparent;
     }
 
-    public void ChangeN()
+    public void ChangeOnNormal()
     {
-        LopataPart1.GetComponent<Renderer>().material = Normal;
-        LopataPart2.GetComponent<Renderer>().material = Normal;
+        LopataPart1.GetComponent<Renderer>().material = _normal;
+        LopataPart2.GetComponent<Renderer>().material = _normal;
     }
 }
