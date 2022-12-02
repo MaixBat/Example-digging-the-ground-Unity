@@ -3,7 +3,8 @@
 public class MovePlayer : MonoBehaviour
 {
     public static MovePlayer Player { get; private set; }
-    [SerializeField] ControlButtons _CB;
+    [SerializeField] GameObject _controller;
+    IControl _control;
 
     public bool CheckMove = true;
 
@@ -19,6 +20,7 @@ public class MovePlayer : MonoBehaviour
 
     private void Awake()
     {
+        _control = _controller.GetComponent<IControl>();
         Player = this;
     }
 
@@ -53,7 +55,7 @@ public class MovePlayer : MonoBehaviour
     {
         if (CheckMove)
         {
-            _CB.MovePlayerMethod();
+            _control.Move();
         }
     }
 }

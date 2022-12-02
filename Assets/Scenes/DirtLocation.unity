@@ -205,6 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c8636d8e7be57a41bb19bb2638e3047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _CB: {fileID: 1883320659}
   _localTake: {fileID: 93234837}
 --- !u!1 &207210946
 GameObject:

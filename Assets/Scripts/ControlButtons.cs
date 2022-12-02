@@ -1,22 +1,25 @@
 using UnityEngine;
 
-public class ControlButtons : MonoBehaviour
+public class ControlButtons : MonoBehaviour, ITake, IControl
 {
-    IControl _control;
-
-    private void Awake()
+    public void Move()
     {
-        _control = gameObject.GetComponent<IControl>();
-    }
-
-    public void MovePlayerMethod()
-    {
-        _control.Move();
+        Vector3 Move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        MovePlayer.Player.transform.Translate(Move * MovePlayer.Player.Speed * Time.fixedDeltaTime);
     }
 
     public bool Use()
     {
         if (Input.GetKeyDown(KeyCode.E))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool ActivateTakeItem()
+    {
+        if (Input.GetKey(KeyCode.Q))
         {
             return true;
         }

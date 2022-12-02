@@ -1,10 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectTakeOnScene : MonoBehaviour
 {
+    [SerializeField] ControlButtons _CB;
     [SerializeField] GameObject _localTake;
     GameObject _tempObj;
     Transform[] _children;
@@ -26,6 +26,14 @@ public class ObjectTakeOnScene : MonoBehaviour
 
     private void Update()
     {
+        if (_CB.ActivateTakeItem())
+        {
+            TakeItemsOnKey();
+        }
+    }
+
+    void TakeItemsOnKey()
+    {
         foreach (int el in _objects.Keys)
         {
             try
@@ -39,8 +47,8 @@ public class ObjectTakeOnScene : MonoBehaviour
                     _tempObj = _objects[Convert.ToInt32(Input.inputString)];
                 }
             }
-            catch (FormatException) {}
-            catch (MissingReferenceException) {}
+            catch (FormatException) { }
+            catch (MissingReferenceException) { }
         }
     }
 }

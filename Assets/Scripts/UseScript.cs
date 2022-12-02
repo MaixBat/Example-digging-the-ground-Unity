@@ -5,7 +5,7 @@ public class UseScript : MonoBehaviour
 {
     event Action InfoObj;
 
-    ControlButtons _CB;
+    ITake _take;
 
     float _mapResol;
     public static float DepthGround = 0.0031f;
@@ -40,7 +40,7 @@ public class UseScript : MonoBehaviour
 
     private void Awake()
     {
-        _CB = gameObject.GetComponent<ControlButtons>();
+        _take = gameObject.GetComponent<ITake>();
     }
 
     [Obsolete]
@@ -87,28 +87,33 @@ public class UseScript : MonoBehaviour
         else
             _lopata.SetActive(false);
 
+        if (_take.UseTarget())
+        {
+            RaycastOnObject();
+        }
+    }
+
+    void RaycastOnObject()
+    {
         Ray _centerScreen = new Ray(_rayDirection.transform.position, _rayDirection.transform.forward);
 
         if (Physics.Raycast(_centerScreen, out RaycastHit _hitObject, _distanceGive))
         {
             if (_hitObject.collider != _terrain.GetComponent<TerrainCollider>())
             {
-                if (_CB.UseTarget())
+                _rayDirection.SetActive(true);
+                if (_take.Use() && MovePlayer.Player.CheckMove)
                 {
-                    _rayDirection.SetActive(true);
-                    if (_CB.Use() && MovePlayer.Player.CheckMove)
-                    {
-                        InfoObj += _hitObject.collider.gameObject.GetComponent<IObject>().PlaySound;
-                        InfoObj += _hitObject.collider.gameObject.GetComponent<IObject>().TakeName;
-                        InfoObj?.Invoke();
-                        InfoObj -= _hitObject.collider.gameObject.GetComponent<IObject>().PlaySound;
-                        InfoObj -= _hitObject.collider.gameObject.GetComponent<IObject>().TakeName;
-                        if (_tempInHand != null)
-                            Destroy(_tempInHand);
-                        _hitObject.collider.gameObject.transform.parent = _hands.transform;
-                        _hitObject.collider.gameObject.transform.localPosition = _localTake.transform.localPosition;
-                        _tempInHand = _hitObject.collider.gameObject;
-                    }
+                    InfoObj += _hitObject.collider.gameObject.GetComponent<IObject>().PlaySound;
+                    InfoObj += _hitObject.collider.gameObject.GetComponent<IObject>().TakeName;
+                    InfoObj?.Invoke();
+                    InfoObj -= _hitObject.collider.gameObject.GetComponent<IObject>().PlaySound;
+                    InfoObj -= _hitObject.collider.gameObject.GetComponent<IObject>().TakeName;
+                    if (_tempInHand != null)
+                        Destroy(_tempInHand);
+                    _hitObject.collider.gameObject.transform.parent = _localTake.transform;
+                    _hitObject.collider.gameObject.transform.position = _localTake.transform.position;
+                    _tempInHand = _hitObject.collider.gameObject;
                 }
             }
 
@@ -119,14 +124,14 @@ public class UseScript : MonoBehaviour
                 _pointX = Convert.ToInt32(_hitObject.point.x * _mapResol);
                 _pointZ = Convert.ToInt32(_hitObject.point.z * _mapResol);
 
-                if (Heights[_pointZ, _pointX] >= _heightMapDefault && _CB.UseTarget())
+                if (Heights[_pointZ, _pointX] >= _heightMapDefault)
                 {
                     if (MovePlayer.Player.CheckMove)
                     {
                         _lopata.SetActive(true);
                         _rayDirection.SetActive(true);
                     }
-                    if (_CB.Use() && MovePlayer.Player.CheckMove)
+                    if (_take.Use() && MovePlayer.Player.CheckMove)
                     {
                         MovePlayer.Player.CheckMove = false;
                         _pointForMoveX = _hitObject.point.x;
@@ -135,42 +140,9 @@ public class UseScript : MonoBehaviour
                         PointZStatic = Convert.ToInt32(_pointForMoveZ * _mapResol);
                         _lopata.transform.position = new Vector3(_pointForMoveX, _lopata.transform.position.y, _pointForMoveZ);
                         _lopata.GetComponent<Animator>().Play("Digging");
-                        /*DOTween.Sequence()
-                            .AppendCallback(CheckMoveVoidF)
-                            .Append(LopataInHand.transform.DOLocalMove(endValue: new Vector3(0.3784409f, -0.05f, 0.15f), duration: 0.5f))
-                            .Append(LopataInHand.transform.DOLocalRotate(endValue: new Vector3(28.554f, 7.702f, 27.442f), duration: 0.3f))
-                            .Append(LopataInHand.transform.DOLocalMove(endValue: new Vector3(0.2678188f, -0.3367314f, 0.830399f), duration: 0.1f))
-                            .Append(LopataInHand.transform.DOLocalRotate(endValue: new Vector3(-1.71f, -2.496f, 22.479f), duration: 0.1f))
-                            .AppendCallback(DirtTrue)
-                            .Append(LopataInHand.transform.DOLocalMove(endValue: new Vector3(0.295495f, -0.4635951f, 0.9054654f), duration: 0.3f))
-                            .Append(LopataInHand.transform.DOLocalRotate(endValue: new Vector3(-33.098f, -11.056f, 27.706f), duration: 0.4f))
-                            .AppendCallback(SetHeights)
-                            .Append(LopataInHand.transform.DOLocalRotate(endValue: new Vector3(-38.21f, -56.401f, 73.332f), duration: 0.2f))
-                            .Append(LopataInHand.transform.DOLocalMove(endValue: new Vector3(-0.2987438f, -0.4296662f, 1.049282f), duration: 0.5f))
-                            .Join(Dirt.transform.DOLocalMove(endValue: new Vector3(-3.89f, 2.71f, 1.49f), duration: 0.7f))
-                            .Append(LopataInHand.transform.DOLocalRotate(endValue: new Vector3(14.877f, 6.996f, 25.548f), duration: 0.3f))
-                            .Join(LopataInHand.transform.DOLocalMove(endValue: new Vector3(0.37844f, -0.502f, 0.827f), duration: 1f))
-                            .AppendCallback(DirtFalse)
-                            .Append(Dirt.transform.DOLocalMove(endValue: new Vector3(0.004f, 0.068f, 1.333f), duration: 0.01f))
-                            .SetLoops(3)
-                            .AppendCallback(CheckMoveVoidT);*/
                     }
                 }
             }
         }
     }
-
-    /*public void SetHeights()
-    {
-        Heights[PointZ, PointX] = DepthGround;
-        Heights[PointZ - 1, PointX - 1] = DepthGround;
-        Heights[PointZ + 1, PointX + 1] = DepthGround;
-        Heights[PointZ + 1, PointX - 1] = DepthGround;
-        Heights[PointZ - 1, PointX + 1] = DepthGround;
-        Heights[PointZ + 1, PointX] = DepthGround;
-        Heights[PointZ - 1, PointX] = DepthGround;
-        Heights[PointZ, PointX - 1] = DepthGround;
-        Heights[PointZ, PointX + 1] = DepthGround;
-        ter.terrainData.SetHeights(0, 0, Heights);
-    }*/
 }
