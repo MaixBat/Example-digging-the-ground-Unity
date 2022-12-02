@@ -7132,7 +7132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e22e04c309d6747a4cbd2171ee97e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _CB: {fileID: 1883320659}
+  _controller: {fileID: 1883320656}
   CheckMove: 1
   Camera: {fileID: 963194225}
   Speed: 2.35

@@ -8,9 +8,7 @@ public class ObjectTakeOnScene : MonoBehaviour
     [SerializeField] GameObject _localTake;
     GameObject _tempObj;
     Transform[] _children;
-    Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>
-    {
-    };
+    Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>{};
 
     public void Awake()
     {
