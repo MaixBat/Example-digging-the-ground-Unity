@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class ObjectTakeOnScene : MonoBehaviour
 {
-    [SerializeField] ControlButtons _CB;
+    [SerializeField] GameObject _takeObj;
     [SerializeField] GameObject _localTake;
+    ITake _take;
     GameObject _tempObj;
     Transform[] _children;
     Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>{};
 
     public void Awake()
     {
+        _take = _takeObj.GetComponent<ITake>();
         _children = gameObject.GetComponentsInChildren<Transform>();
         int i = 0;
         foreach (Transform el in _children)
@@ -24,7 +26,7 @@ public class ObjectTakeOnScene : MonoBehaviour
 
     private void Update()
     {
-        if (_CB.ActivateTakeItem())
+        if (_take.ActivateTakeItem())
         {
             TakeItemsOnKey();
         }
