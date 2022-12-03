@@ -82,11 +82,9 @@ public class UseScript : MonoBehaviour
     void Update()
     {
         _rayDirection.SetActive(false);
-        if (!MovePlayer.Player.CheckMove)
-            _lopata.SetActive(true);
-        else
-            _lopata.SetActive(false);
 
+        _lopata.SetActive(!MovePlayer.Player.CheckMove);
+        
         if (_take.UseTarget())
         {
             RaycastOnObject();

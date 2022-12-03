@@ -12,11 +12,11 @@ public class MovePlayer : MonoBehaviour
 
     public float Speed = 5;
 
-    [SerializeField] float _sensX = 5, _sensY = 5;
-    float _moveY, _moveX;
-    [SerializeField] bool _rootX = true, _rootY = true;
-    [SerializeField] bool _testY = true, _testX = false;
-    [SerializeField] Vector2 _minMaxY = new Vector2(-70, 70), _minMaxX = new Vector2(-360, 360);
+    public float SensX = 5, SensY = 5;
+    [HideInInspector] public float MoveY, MoveX;
+    public bool RootX = true, RootY = true;
+    public bool TestY = true, TestX = false;
+    public Vector2 MinMaxY = new Vector2(-70, 70), MinMaxX = new Vector2(-360, 360);
 
     private void Awake()
     {
@@ -24,30 +24,11 @@ public class MovePlayer : MonoBehaviour
         Player = this;
     }
 
-    static float ClampAngle(float _angle, float _min, float _max)
-    {
-        if (_angle < -360F)
-            _angle += 360F;
-        if (_angle > 360F)
-            _angle -= 360F;
-        return Mathf.Clamp(_angle, _min, _max);
-    }
-
     void Update()
     {
         if (CheckMove)
         {
-            if (_rootY)
-                _moveY -= Input.GetAxis("Mouse Y") * _sensY;
-            if (_testY)
-                _moveY = ClampAngle(_moveY, _minMaxY.x, _minMaxY.y);
-            if (_rootX)
-                _moveX += Input.GetAxis("Mouse X") * _sensX;
-            if (_testX)
-                _moveX = ClampAngle(_moveX, _minMaxX.x, _minMaxX.y);
-
-            Camera.transform.rotation = Quaternion.Euler(_moveY, _moveX, 0);
-            gameObject.transform.rotation = Quaternion.Euler(gameObject.transform.rotation.y, _moveX, 0);
+            _control.Rotate();
         }
     }
 
