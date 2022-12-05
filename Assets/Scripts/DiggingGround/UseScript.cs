@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class UseScript : MonoBehaviour
 {
+    MovePlayer _player;
+
     event Action InfoObj;
 
     ITake _take;
@@ -40,6 +42,7 @@ public class UseScript : MonoBehaviour
 
     private void Awake()
     {
+        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<MovePlayer>();
         _take = gameObject.GetComponent<ITake>();
     }
 
@@ -83,7 +86,7 @@ public class UseScript : MonoBehaviour
     {
         _rayDirection.SetActive(false);
 
-        _lopata.SetActive(!MovePlayer.Player.CheckMove);
+        _lopata.SetActive(!_player.CheckMove);
         
         if (_take.UseTarget())
         {
@@ -100,7 +103,7 @@ public class UseScript : MonoBehaviour
             if (_hitObject.collider != _terrain.GetComponent<TerrainCollider>())
             {
                 _rayDirection.SetActive(true);
-                if (_take.Use() && MovePlayer.Player.CheckMove)
+                if (_take.Use() && _player.CheckMove)
                 {
                     InfoObj += _hitObject.collider.gameObject.GetComponent<IObject>().PlaySound;
                     InfoObj += _hitObject.collider.gameObject.GetComponent<IObject>().TakeName;
@@ -117,21 +120,21 @@ public class UseScript : MonoBehaviour
 
             if (_hitObject.collider == _terrain.GetComponent<TerrainCollider>())
             {
-                _lopata.transform.LookAt(MovePlayer.Player.transform);
+                _lopata.transform.LookAt(_player.transform);
                 _lopata.transform.position = new Vector3(_hitObject.point.x, _lopata.transform.position.y, _hitObject.point.z);
                 _pointX = Convert.ToInt32(_hitObject.point.x * _mapResol);
                 _pointZ = Convert.ToInt32(_hitObject.point.z * _mapResol);
 
                 if (Heights[_pointZ, _pointX] >= _heightMapDefault)
                 {
-                    if (MovePlayer.Player.CheckMove)
+                    if (_player.CheckMove)
                     {
                         _lopata.SetActive(true);
                         _rayDirection.SetActive(true);
                     }
-                    if (_take.Use() && MovePlayer.Player.CheckMove)
+                    if (_take.Use() && _player.CheckMove)
                     {
-                        MovePlayer.Player.CheckMove = false;
+                        _player.CheckMove = false;
                         _pointForMoveX = _hitObject.point.x;
                         _pointForMoveZ = _hitObject.point.z;
                         PointXStatic = Convert.ToInt32(_pointForMoveX * _mapResol);

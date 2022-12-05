@@ -7059,7 +7059,7 @@ GameObject:
   - component: {fileID: 1835296432}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7136,14 +7136,16 @@ MonoBehaviour:
   CheckMove: 1
   Camera: {fileID: 963194225}
   Speed: 2.35
-  _sensX: 5
-  _sensY: 5
-  _rootX: 1
-  _rootY: 1
-  _testY: 1
-  _testX: 0
-  _minMaxY: {x: -70, y: 70}
-  _minMaxX: {x: -360, y: 360}
+  SensX: 5
+  SensY: 5
+  MoveY: 0
+  MoveX: 0
+  RootX: 1
+  RootY: 1
+  TestY: 1
+  TestX: 0
+  MinMaxY: {x: -70, y: 70}
+  MinMaxX: {x: -360, y: 360}
 --- !u!33 &1835296430
 MeshFilter:
   m_ObjectHideFlags: 0

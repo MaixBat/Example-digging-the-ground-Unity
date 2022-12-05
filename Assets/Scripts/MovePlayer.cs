@@ -2,7 +2,6 @@
 
 public class MovePlayer : MonoBehaviour
 {
-    public static MovePlayer Player { get; private set; }
     [SerializeField] GameObject _controller;
     IControl _control;
 
@@ -21,7 +20,6 @@ public class MovePlayer : MonoBehaviour
     private void Awake()
     {
         _control = _controller.GetComponent<IControl>();
-        Player = this;
     }
 
     void Update()

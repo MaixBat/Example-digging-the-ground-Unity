@@ -2,15 +2,23 @@ using UnityEngine;
 
 public class AnimatorControl : MonoBehaviour
 {
+    MovePlayer _player;
+
     public LopataColor _colorChangeLopata;
+
+    private void Awake()
+    {
+        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<MovePlayer>();
+    }
+
     public void CheckMoveTrue()
     {
-        MovePlayer.Player.CheckMove = true;
+        _player.CheckMove = true;
     }
 
     public void CheckMoveFalse()
     {
-        MovePlayer.Player.CheckMove = false;
+        _player.CheckMove = false;
     }
 
     public void SetHeights()

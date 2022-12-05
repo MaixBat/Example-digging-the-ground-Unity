@@ -1,12 +1,14 @@
 using UnityEngine;
 
-public class ControlButtons : MonoBehaviour, ITake, IControl
+public class ControlButtonsPaintMod : MonoBehaviour, IControl, IClick
 {
     MovePlayer _player;
+    Paint _paint;
 
     private void Awake()
     {
-        _player = MovePlayer.Player;
+        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<MovePlayer>();
+        _paint = GetComponent<Paint>();
     }
 
     public void Move()
@@ -27,7 +29,7 @@ public class ControlButtons : MonoBehaviour, ITake, IControl
             _player.MoveX = ClampAngle(_player.MoveX, _player.MinMaxX.x, _player.MinMaxX.y);
 
         _player.Camera.transform.rotation = Quaternion.Euler(_player.MoveY, _player.MoveX, 0);
-        gameObject.transform.rotation = Quaternion.Euler(gameObject.transform.rotation.y, _player.MoveX, 0);
+        _player.transform.rotation = Quaternion.Euler(_player.transform.rotation.y, _player.MoveX, 0);
     }
 
     static float ClampAngle(float _angle, float _min, float _max)
@@ -39,9 +41,15 @@ public class ControlButtons : MonoBehaviour, ITake, IControl
         return Mathf.Clamp(_angle, _min, _max);
     }
 
-    public bool Use() => Input.GetKeyDown(KeyCode.E);
-
-    public bool ActivateTakeItem() => Input.GetKey(KeyCode.Q);
-
-    public bool UseTarget() => Input.GetMouseButton(1);
+    public void ClickLeftButton()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            _paint.SetPixelColor();
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            _paint.SetDefaultPosition();
+        }
+    }
 }
