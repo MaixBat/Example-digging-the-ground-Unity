@@ -1,9 +1,15 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Paint : MonoBehaviour
 {
     IClick _click;
+
+    [SerializeField] MovePlayer _player;
+
+    [SerializeField] GameObject _endMenu;
 
     [SerializeField] GameObject _wall;
     [SerializeField] GameObject _pointPencyl;
@@ -19,6 +25,15 @@ public class Paint : MonoBehaviour
     Vector2 _point;
     bool _checkPosition = false;
 
+    [SerializeField] Text _countPercent;
+    [SerializeField] Text _countPercentEndMenu;
+
+    [SerializeField] GameObject[] _letters;
+    int _countLetters;
+
+    float _percent = 100f;
+    int _delayError = 0;
+
     private void OnApplicationQuit()
     {
         SetDefaultColor();
@@ -26,6 +41,7 @@ public class Paint : MonoBehaviour
 
     private void Awake()
     {
+        _countLetters = _letters.Length;
         _click = GetComponent<IClick>();
         _correctionX = 1;
         _correctionZ = 1;
@@ -54,11 +70,55 @@ public class Paint : MonoBehaviour
         _click.ClickLeftButton();
     }
 
+    public void RestartScene()
+    {
+        SetDefaultColor();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     public void SetPixelColor()
     {
         Ray ray = new Ray(_pointPencyl.transform.position, _pointPencyl.transform.forward);
 
         RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 1f))
+        { 
+            if (hit.collider.CompareTag("NeedDestroy"))
+            {
+                Destroy(hit.collider);
+                if (hit.collider.gameObject.GetComponents<BoxCollider>().Length <= 1)
+                {
+                    _player.CheckMove = false;
+                    _endMenu.SetActive(true);
+                }
+            }
+            if (hit.collider.CompareTag("Letter"))
+            {
+                _delayError++;
+                if (_delayError >= 10)
+                {
+                    _percent = _percent - (3 / (float)_countLetters);
+                    if (_percent <= 0)
+                    {
+                        _percent = 0;
+                        _player.CheckMove = false;
+                        _endMenu.SetActive(true);
+                    }
+                    _countPercent.text = "Процент совпадения " + _percent.ToString() + "%";
+                    _countPercentEndMenu.text = "Процент совпадения " + _percent.ToString() + "%";
+                    _delayError = 0;
+                }
+            }
+            if (hit.collider.CompareTag("Error"))
+            {
+                _percent = 0;
+                _player.CheckMove = false;
+                _endMenu.SetActive(true);
+                _countPercent.text = "Процент совпадения " + _percent.ToString() + "%";
+                _countPercentEndMenu.text = "Процент совпадения " + _percent.ToString() + "%";
+            }
+        }
+
         if (_wall.GetComponent<MeshCollider>().Raycast(ray, out hit, 1f))
         {
             int _rayX = Convert.ToInt32(hit.textureCoord.x * _textureSize);
