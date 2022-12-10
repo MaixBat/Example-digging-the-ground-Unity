@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Threading;
+using System.Collections;
 
 public class Paint : MonoBehaviour
 {
@@ -16,23 +18,33 @@ public class Paint : MonoBehaviour
 
     private int _textureSize = 1024;
     [SerializeField] private Texture2D _texture;
-    [SerializeField] private Color _color;
     [SerializeField] private int _brushSize = 8;
     float _correctionX, _correctionZ;
     int _correctionXInt, _correctionZInt;
     int _counter = 0;
-    [SerializeField][Range(1,1000)] int _delay = 50;
+    [SerializeField] [Range(1, 10000)] int _delay = 50;
     Vector2 _point;
     bool _checkPosition = false;
 
-    [SerializeField] Text _countPercent;
     [SerializeField] Text _countPercentEndMenu;
 
-    [SerializeField] GameObject[] _letters;
-    int _countLetters;
+    Color[] _defaultPixels = new Color[1048577];
+    Color[] _greenPixels = new Color[100000];
+    Color[] _greenPixelsNeed = new Color[50000];
+    Color[] _whitePixels = new Color[1048577];
+    Color[] _tempPixels = new Color[1048577];
+
+    int[] _greenPixelsWidth = new int[50000];
+    int[] _greenPixelsHeight = new int[50000];
 
     float _percent = 100f;
-    int _delayError = 0;
+    [SerializeField]
+    [Range(0.01f, 1)] float _percentMinus = 0.1f;
+
+    bool _checkEndStart = false;
+
+    MeshCollider _wallCollider;
+
 
     private void OnApplicationQuit()
     {
@@ -41,7 +53,62 @@ public class Paint : MonoBehaviour
 
     private void Awake()
     {
-        _countLetters = _letters.Length;
+        _wallCollider = _wall.GetComponent<MeshCollider>();
+
+        int k = 0;
+        int kk = 0;
+        int kkk = 0;
+        for (int i = 0; i < _texture.width; i++)
+        {
+            for (int j = 0; j < _texture.height; j++)
+            {
+                _defaultPixels[k] = _texture.GetPixel(i, j);
+                _tempPixels[k] = _texture.GetPixel(i, j);
+                if (_texture.GetPixel(i, j) != Color.white)
+                {
+                    _greenPixels[kk] = _texture.GetPixel(i, j);
+                    kk++;
+                }
+                else
+                {
+                    _whitePixels[kkk] = _texture.GetPixel(i, j);
+                    kkk++;
+                }
+                k++;
+            }
+        }
+        //Debug.Log(k);
+        //Debug.Log(kk);
+        //Debug.Log(kkk);
+
+        int kkkk = 0;
+        for (int i = 0; i < _texture.width; i++)
+        {
+            for (int j = 0; j < _texture.height; j++)
+            {
+                if (_texture.GetPixel(i, j) == _greenPixels[5])
+                {
+                    _greenPixelsNeed[kkkk] = _texture.GetPixel(i, j);
+                    _greenPixelsWidth[kkkk] = i;
+                    _greenPixelsHeight[kkkk] = j;
+                    kkkk++;
+                }
+            }
+        }
+        //Debug.Log(kkkk);
+
+
+        StartCoroutine(GetArea());
+
+        /*for (int i = 25; i < _texture.width - 25; i++)
+        {
+            for (int j = 10; j < _texture.height - 830; j++)
+            {
+                _texture.SetPixel(i, j, Color.black);
+            }
+        }
+        _texture.Apply();*/
+
         _click = GetComponent<IClick>();
         _correctionX = 1;
         _correctionZ = 1;
@@ -55,14 +122,36 @@ public class Paint : MonoBehaviour
 
     void SetDefaultColor()
     {
+        int k = 0;
         for (int i = 0; i < _texture.width; i++)
         {
             for (int j = 0; j < _texture.height; j++)
             {
-                _texture.SetPixel(i, j, Color.white);
+                _texture.SetPixel(i, j, _defaultPixels[k]);
+                k++;
             }
         }
         _texture.Apply();
+    }
+
+    IEnumerator GetArea()
+    {
+        while (!_checkEndStart)
+        {
+            bool _checkEnd = true;
+
+            for (int i = 0; i < _greenPixelsNeed.Length; i++)
+            {
+                if (_texture.GetPixel(_greenPixelsWidth[i], _greenPixelsHeight[i]) == _greenPixels[5])
+                    _checkEnd = false;
+            }
+            if (_checkEnd)
+            {
+                EndMenuStart();
+                _checkEndStart = true;
+            }
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 
     private void Update()
@@ -76,54 +165,42 @@ public class Paint : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
+    void EndMenuStart()
+    {
+        int k = 0;
+        for (int i = 0; i < _texture.width; i++)
+        {
+            for (int j = 0; j < _texture.height; j++)
+            {
+                _tempPixels[k] = _texture.GetPixel(i, j);
+                k++;
+            }
+        }
+        for (int i = 0; i < _defaultPixels.Length; i++)
+        {
+            if (_defaultPixels[i] == Color.white && _tempPixels[i] == Color.black)
+            {
+                _percent -= _percentMinus;
+            }
+        }
+        if (_percent < 0)
+            _percent = 0;
+        _countPercentEndMenu.text = "Процент совпадения " + _percent.ToString() + "%";
+        _player.CheckMove = false;
+        _endMenu.SetActive(true);
+    }
+
     public void SetPixelColor()
     {
         Ray ray = new Ray(_pointPencyl.transform.position, _pointPencyl.transform.forward);
 
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 1f))
-        { 
-            if (hit.collider.CompareTag("NeedDestroy"))
-            {
-                Destroy(hit.collider);
-                if (hit.collider.gameObject.GetComponents<BoxCollider>().Length <= 1)
-                {
-                    _player.CheckMove = false;
-                    _endMenu.SetActive(true);
-                }
-            }
-            if (hit.collider.CompareTag("Letter"))
-            {
-                _delayError++;
-                if (_delayError >= 10)
-                {
-                    _percent = _percent - (3 / (float)_countLetters);
-                    if (_percent <= 0)
-                    {
-                        _percent = 0;
-                        _player.CheckMove = false;
-                        _endMenu.SetActive(true);
-                    }
-                    _countPercent.text = "Процент совпадения " + _percent.ToString() + "%";
-                    _countPercentEndMenu.text = "Процент совпадения " + _percent.ToString() + "%";
-                    _delayError = 0;
-                }
-            }
-            if (hit.collider.CompareTag("Error"))
-            {
-                _percent = 0;
-                _player.CheckMove = false;
-                _endMenu.SetActive(true);
-                _countPercent.text = "Процент совпадения " + _percent.ToString() + "%";
-                _countPercentEndMenu.text = "Процент совпадения " + _percent.ToString() + "%";
-            }
-        }
 
-        if (_wall.GetComponent<MeshCollider>().Raycast(ray, out hit, 1f))
+        if (_wallCollider.Raycast(ray, out hit, 1f))
         {
             int _rayX = Convert.ToInt32(hit.textureCoord.x * _textureSize);
             int _rayZ = Convert.ToInt32(hit.textureCoord.y * _textureSize);
-            if (_texture.GetPixel(_rayX, _rayZ) != _color)
+            if (_texture.GetPixel(_rayX, _rayZ) != Color.black)
             {
                 if (_point != new Vector2(0, 0))
                 {
@@ -137,7 +214,7 @@ public class Paint : MonoBehaviour
                         {
                             for (int j = _tempZ - _correctionXInt; j < _tempZ + _correctionXInt; j++)
                             {
-                                _texture.SetPixel(i, j, _color);
+                                _texture.SetPixel(i, j, Color.black);
                                 _counter++;
                             }
                         }
@@ -158,7 +235,7 @@ public class Paint : MonoBehaviour
                     {
                         for (int j = _rayZ - _correctionXInt; j < _rayZ + _correctionXInt; j++)
                         {
-                            _texture.SetPixel(i, j, _color);
+                            _texture.SetPixel(i, j, Color.black);
                             _counter++;
                         }
                     }
@@ -168,7 +245,7 @@ public class Paint : MonoBehaviour
             {
                 _texture.Apply();
                 _counter = 0;
-            }    
+            }
         }
         else
         {
