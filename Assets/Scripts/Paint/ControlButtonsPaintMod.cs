@@ -41,15 +41,26 @@ public class ControlButtonsPaintMod : MonoBehaviour, IControl, IClick
         return Mathf.Clamp(_angle, _min, _max);
     }
 
-    public void ClickLeftButton()
+    public void ClickLeftButton(GameObject obj)
     {
-        if (Input.GetMouseButton(0))
+        Ray ray = new Ray(obj.transform.position, obj.transform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
         {
-            _paint.SetPixelColor();
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            _paint.SetDefaultPosition();
+            if (!hit.collider.CompareTag("PaintError"))
+            {
+                if (Input.GetMouseButton(0))
+                {
+                    _paint.SetPixelColor();
+                }
+                if (Input.GetMouseButtonUp(0))
+                {
+                    _paint.SetDefaultPosition();
+                }
+            }
+            else
+                _paint.SetDefaultPosition();
         }
     }
 }

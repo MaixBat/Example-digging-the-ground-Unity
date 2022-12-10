@@ -7,12 +7,16 @@ using System.Collections;
 
 public class Paint : MonoBehaviour
 {
+    public static bool AllowPaint = false;
+    public static bool StartAllowPaint = false;
+
+    [SerializeField] Texture2D _pointPaint;
+
     IClick _click;
 
     [SerializeField] MovePlayer _player;
 
     [SerializeField] GameObject _endMenu;
-
     [SerializeField] GameObject _wall;
     [SerializeField] GameObject _pointPencyl;
 
@@ -98,6 +102,8 @@ public class Paint : MonoBehaviour
         //Debug.Log(kkkk);
 
 
+        SetDefaultColorPoint();
+
         StartCoroutine(GetArea());
 
         /*for (int i = 25; i < _texture.width - 25; i++)
@@ -118,6 +124,18 @@ public class Paint : MonoBehaviour
             _correctionZ = _wall.transform.localScale.z / _wall.transform.localScale.x;
         _correctionXInt = (int)(_brushSize * _correctionX);
         _correctionZInt = (int)(_brushSize * _correctionZ);
+    }
+
+    void SetDefaultColorPoint()
+    {
+        for (int i = 0; i < _pointPaint.width; i++)
+        {
+            for (int j = 0; j < _pointPaint.height; j++)
+            {
+                _pointPaint.SetPixel(i, j, Color.white);
+            }
+        }
+        _pointPaint.Apply();
     }
 
     void SetDefaultColor()
@@ -156,12 +174,35 @@ public class Paint : MonoBehaviour
 
     private void Update()
     {
-        _click.ClickLeftButton();
+        CheckAllowPaint();
+
+        if (AllowPaint)
+        {
+            _click.ClickLeftButton(_pointPencyl);
+        }
+    }
+
+    void CheckAllowPaint()
+    {
+        if (AllowPaint && StartAllowPaint)
+        {
+            for (int i = 0; i < _pointPaint.width; i++)
+            {
+                for (int j = 0; j < _pointPaint.height; j++)
+                {
+                    _pointPaint.SetPixel(i, j, Color.black);
+                }
+            }
+            StartAllowPaint = false;
+            _pointPaint.Apply();
+        }
     }
 
     public void RestartScene()
     {
+        StopCoroutine(GetArea());
         SetDefaultColor();
+        SetDefaultColorPoint();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -190,10 +231,11 @@ public class Paint : MonoBehaviour
         _endMenu.SetActive(true);
     }
 
+    float x = 0, y = 0, z = 0;
+
     public void SetPixelColor()
     {
         Ray ray = new Ray(_pointPencyl.transform.position, _pointPencyl.transform.forward);
-
         RaycastHit hit;
 
         if (_wallCollider.Raycast(ray, out hit, 1f))
@@ -243,6 +285,25 @@ public class Paint : MonoBehaviour
             }
             if (_counter >= _delay)
             {
+                x += 0.001f;
+                y += 0.001f;
+                z += 0.001f;
+                Color _newColor = new Color(x, y, z, 0);
+                if (x >= 1)
+                {
+                    AllowPaint = false;
+                    x = 0;
+                    y = 0;
+                    z = 0;
+                }
+                for (int i = 0; i < _pointPaint.width; i++)
+                {
+                    for (int j = 0; j < _pointPaint.height; j++)
+                    {
+                        _pointPaint.SetPixel(i, j, _newColor);
+                    }
+                }
+                _pointPaint.Apply();
                 _texture.Apply();
                 _counter = 0;
             }

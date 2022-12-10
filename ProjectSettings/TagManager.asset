@@ -4,9 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - NeedDestroy
-  - Letter
-  - Error
+  - PaintPoint
+  - PaintError
   layers:
   - Default
   - TransparentFX

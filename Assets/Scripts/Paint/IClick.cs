@@ -1,5 +1,5 @@
-
+using UnityEngine;
 public interface IClick
 {
-    void ClickLeftButton();
+    void ClickLeftButton(GameObject obj);
 }
