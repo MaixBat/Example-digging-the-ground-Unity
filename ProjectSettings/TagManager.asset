@@ -4,8 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - PaintPoint
-  - PaintError
+  - Wall
   layers:
   - Default
   - TransparentFX
