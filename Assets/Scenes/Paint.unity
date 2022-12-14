@@ -461,7 +461,7 @@ MonoBehaviour:
   _camera: {fileID: 1498497966}
   _wall: {fileID: 1687182873}
   _texture: {fileID: 2800000, guid: d3862927b8405dc4ea0d1f9f6d44fc1e, type: 3}
-  _brushSize: 2
+  _brushSize: 9
   _delay: 1
   _percentMinus: 0.1
 --- !u!1 &706147889
@@ -1069,7 +1069,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 80
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -1095,7 +1095,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1498497966}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.022, y: 0.96, z: 0.395}
+  m_LocalPosition: {x: -0.022, y: 0.8893, z: 0.395}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

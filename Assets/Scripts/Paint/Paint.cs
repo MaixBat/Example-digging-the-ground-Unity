@@ -92,16 +92,28 @@ public class Paint : MonoBehaviour
             // —ледование за кистью дл€ плавного рисовани€
             // “очка к которой будет закрашена стена
             Vector2 _tempPoint = new Vector2(_rayX, _rayZ);
-            for (int k = 0; k < 10; k++)
+            for (int k = 0; k < 100; k++)
             {
-                _point = Vector2.Lerp(_point, _tempPoint, 0.03f);
+                _point = Vector2.Lerp(_point, _tempPoint, 0.02f);
                 int _tempX = (int)_point.x;
                 int _tempZ = (int)_point.y;
-                for (int i = _tempX - _brushSize; i < _tempX + _brushSize; i++)
+                for (int i = 0; i < _brushSize; i++)
                 {
-                    for (int j = _tempZ - _brushSize; j < _tempZ + _brushSize; j++)
+                    for (int j = 0; j < _brushSize; j++)
                     {
-                        _texture.SetPixel(i, j, Color.black);
+                        float x2 = Mathf.Pow(i - _brushSize / 2, 2);
+                        float y2 = Mathf.Pow(j - _brushSize / 2, 2);
+                        float r2 = Mathf.Pow(_brushSize / 2 - 0.5f, 2);
+
+                        if (x2 + y2 < r2)
+                        {
+                            int pixelX = _tempX + i - _brushSize / 2;
+                            int pixelY = _tempZ + j - _brushSize / 2;
+
+                            Color oldColor = _texture.GetPixel(pixelX, pixelY);
+                            Color resultColor = Color.Lerp(oldColor, Color.black, Color.black.a);
+                            _texture.SetPixel(pixelX, pixelY, resultColor);
+                        }
                         _counter++;
                     }
                 }
@@ -120,11 +132,23 @@ public class Paint : MonoBehaviour
         {
             // ≈сли нет следующей точки к которой надо закрасить
             _point = new Vector2(_rayX, _rayZ);
-            for (int i = _rayX - _brushSize; i < _rayX + _brushSize; i++)
+            for (int i = 0; i < _brushSize; i++)
             {
-                for (int j = _rayZ - _brushSize; j < _rayZ + _brushSize; j++)
+                for (int j = 0; j < _brushSize; j++)
                 {
-                    _texture.SetPixel(i, j, Color.black);
+                    float x2 = Mathf.Pow(i - _brushSize / 2, 2);
+                    float y2 = Mathf.Pow(j - _brushSize / 2, 2);
+                    float r2 = Mathf.Pow(_brushSize / 2 - 0.5f, 2);
+
+                    if (x2 + y2 < r2)
+                    {
+                        int pixelX = _rayX + i - _brushSize / 2;
+                        int pixelY = _rayZ + j - _brushSize / 2;
+
+                        Color oldColor = _texture.GetPixel(pixelX, pixelY);
+                        Color resultColor = Color.Lerp(oldColor, Color.black, Color.black.a);
+                        _texture.SetPixel(pixelX, pixelY, resultColor);
+                    }
                     _counter++;
                 }
             }
