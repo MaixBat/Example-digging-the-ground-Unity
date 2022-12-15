@@ -25,8 +25,6 @@ public class Paint : MonoBehaviour
     bool _checkPosition = false;
     // Начальные значения цветов пикселей на текстуре
     Color[] _defaultPixels;
-    // Итоговые значения цветов пикселей на текстуре
-    Color[] _tempPixels;
     // Процент совпадения
     float _percent = 100f;
     // Процент который отнимается в случае если закрашен белый пиксель
@@ -48,7 +46,6 @@ public class Paint : MonoBehaviour
         _textureHeight = _texturePaint.height;
 
         _defaultPixels = new Color[_textureWidth * _textureHeight + 1];
-        _tempPixels = new Color[_textureWidth * _textureHeight + 1];
 
         // Счётчик для массива начальных пикселей и конечных пикселей
         int k = 0;
