@@ -62,7 +62,7 @@ public class Paint : MonoBehaviour
     }
 
     // Метод сравнения правильности рисования
-    void EndEquals()
+    public void EndEquals()
     {
         for (int i = 0; i < _texturePaint.width; i++)
         {
