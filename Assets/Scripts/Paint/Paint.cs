@@ -11,7 +11,8 @@ public class Paint : MonoBehaviour
     // Высота текстуры стены
     private int _textureHeight;
     // Текстура стены
-    [SerializeField] private Texture2D _texture;
+    [SerializeField] private Texture2D _texturePaint;
+    [SerializeField] private Texture2D _textureStart;
     // Размер кисти
     [SerializeField] private int _brushSize = 8;
     // Счётчик для срабатывания применения текстуры
@@ -24,10 +25,16 @@ public class Paint : MonoBehaviour
     bool _checkPosition = false;
     // Начальные значения цветов пикселей на текстуре
     Color[] _defaultPixels;
+    // Итоговые значения цветов пикселей на текстуре
+    Color[] _tempPixels;
     // Процент совпадения
     float _percent = 100f;
     // Процент который отнимается в случае если закрашен белый пиксель
     [SerializeField] [Range(0.01f, 1)] float _percentMinus = 0.1f;
+    // Количество правильно закрашенных пикселей
+    int _countRight = 0;
+    // Количество неправильно закрашенных пикселей
+    int _countWrong = 0;
 
 
     private void OnApplicationQuit()
@@ -37,43 +44,73 @@ public class Paint : MonoBehaviour
 
     private void Awake()
     {
-        _textureWidth = _texture.width;
-        _textureHeight = _texture.height;
+        _textureWidth = _texturePaint.width;
+        _textureHeight = _texturePaint.height;
 
         _defaultPixels = new Color[_textureWidth * _textureHeight + 1];
+        _tempPixels = new Color[_textureWidth * _textureHeight + 1];
 
         // Счётчик для массива начальных пикселей и конечных пикселей
         int k = 0;
         // Считываем все пиксели со сцены
-        for (int i = 0; i < _texture.width; i++)
+        for (int i = 0; i < _texturePaint.width; i++)
         {
-            for (int j = 0; j < _texture.height; j++)
+            for (int j = 0; j < _texturePaint.height; j++)
             {
-                _defaultPixels[k] = _texture.GetPixel(i, j);
+                _defaultPixels[k] = _texturePaint.GetPixel(i, j);
                 k++;
             }
         }
         ///////////////////////////////////
     }
 
+    // Метод сравнения правильности рисования
+    void EndEquals()
+    {
+        for (int i = 0; i < _texturePaint.width; i++)
+        {
+            for (int j = 0; j < _texturePaint.height; j++)
+            {
+                if (_texturePaint.GetPixel(i, j) == Color.black)
+                {
+                    if (_textureStart.GetPixel(i, j) != Color.white)
+                        _countRight++;
+                    else
+                        _countWrong++;
+                }
+            }
+        }
+    }
+    ///////////////////////////////////
+
     // Установить значение цвета стены по умолчанию
     void SetDefaultColor()
     {
         int k = 0;
-        for (int i = 0; i < _texture.width; i++)
+        for (int i = 0; i < _texturePaint.width; i++)
         {
-            for (int j = 0; j < _texture.height; j++)
+            for (int j = 0; j < _texturePaint.height; j++)
             {
-                _texture.SetPixel(i, j, _defaultPixels[k]);
+                _texturePaint.SetPixel(i, j, _defaultPixels[k]);
                 k++;
             }
         }
-        _texture.Apply();
+        _texturePaint.Apply();
     }
     //////////////////////////////////////////////
 
     private void Update()
     {
+        // Для проверки работы сравнения
+        if (Input.GetMouseButton(1))
+        {
+            EndEquals();
+            Debug.Log("Right " + _countRight);
+            Debug.Log("Wrong " + _countWrong);
+            _countRight = 0;
+            _countWrong = 0;
+        }
+        ///////////////////////////////
         if (Input.GetMouseButton(0))
         {
             SetPixelColor();
@@ -110,9 +147,9 @@ public class Paint : MonoBehaviour
                             int pixelX = _tempX + i - _brushSize / 2;
                             int pixelY = _tempZ + j - _brushSize / 2;
 
-                            Color oldColor = _texture.GetPixel(pixelX, pixelY);
+                            Color oldColor = _texturePaint.GetPixel(pixelX, pixelY);
                             Color resultColor = Color.Lerp(oldColor, Color.black, Color.black.a);
-                            _texture.SetPixel(pixelX, pixelY, resultColor);
+                            _texturePaint.SetPixel(pixelX, pixelY, resultColor);
                         }
                         _counter++;
                     }
@@ -145,9 +182,9 @@ public class Paint : MonoBehaviour
                         int pixelX = _rayX + i - _brushSize / 2;
                         int pixelY = _rayZ + j - _brushSize / 2;
 
-                        Color oldColor = _texture.GetPixel(pixelX, pixelY);
+                        Color oldColor = _texturePaint.GetPixel(pixelX, pixelY);
                         Color resultColor = Color.Lerp(oldColor, Color.black, Color.black.a);
-                        _texture.SetPixel(pixelX, pixelY, resultColor);
+                        _texturePaint.SetPixel(pixelX, pixelY, resultColor);
                     }
                     _counter++;
                 }
@@ -172,7 +209,7 @@ public class Paint : MonoBehaviour
                 if (_counter >= _delay)
                 {
                     // Изменить текстуру стены для рисования
-                    _texture.Apply();
+                    _texturePaint.Apply();
                     _counter = 0;
                 }
             }
