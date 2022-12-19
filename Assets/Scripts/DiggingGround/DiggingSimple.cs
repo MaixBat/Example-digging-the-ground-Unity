@@ -8,6 +8,10 @@ public class DiggingSimple : MonoBehaviour
     [SerializeField] GameObject _ground;
     private MeshFilter _meshFilter;
     private MeshCollider _meshCollider;
+    private Vector3[] vertices;
+    private Vector3[,] coordinate;
+    private Mesh mesh; 
+
 
     private void Awake()
     {
@@ -15,6 +19,17 @@ public class DiggingSimple : MonoBehaviour
         _meshFilter = _ground.GetComponent<MeshFilter>();
         _meshCollider = _ground.GetComponent<MeshCollider>();
         TestMesh();
+
+        mesh = _meshFilter.mesh;
+        vertices = mesh.vertices;
+        coordinate = new Vector3[(int)Mathf.Sqrt(vertices.Length), (int)Mathf.Sqrt(vertices.Length)];
+        for (int i = 0; i < Mathf.Sqrt(vertices.Length); i++)
+        {
+            for (int j = 0; j < Mathf.Sqrt(vertices.Length); j++)
+            {
+                coordinate[i, j] = vertices[(int)(Mathf.Sqrt(vertices.Length) * i + j)];
+            }
+        }
     }
 
     private void TestMesh()
@@ -44,12 +59,12 @@ public class DiggingSimple : MonoBehaviour
             }
         }
 
-        Mesh mesh = new Mesh();
-        mesh.vertices = points.ToArray();
-        mesh.triangles = triangles.ToArray();
-        mesh.RecalculateNormals();
-        _meshFilter.mesh = mesh;
-        _meshCollider.sharedMesh = mesh;
+        Mesh newmesh = new Mesh();
+        newmesh.vertices = points.ToArray();
+        newmesh.triangles = triangles.ToArray();
+        newmesh.RecalculateNormals();
+        _meshFilter.mesh = newmesh;
+        _meshCollider.sharedMesh = newmesh;
     }
 
     private void Update()
@@ -70,17 +85,15 @@ public class DiggingSimple : MonoBehaviour
         {
             if (hit.collider.CompareTag("Ground"))
             {
-                Mesh mesh = _meshFilter.mesh;
-                Vector3[] vertices = mesh.vertices;
-                Vector3[,] coordinate = new Vector3[vertices.Length, vertices.Length];
-                for (int i = 0; i < Mathf.Sqrt(vertices.Length); i++)
-                {
-                    for (int j = 0; j < Mathf.Sqrt(vertices.Length); j++)
-                    {
-                        coordinate[i, j] = vertices[(int)(Mathf.Sqrt(vertices.Length) * i + j)];
-                    }
-                }
-                coordinate[(int)(hit.point.z * 10 / _ground.transform.localScale.z), (int)(hit.point.x * 10 / _ground.transform.localScale.x)] = new Vector3(coordinate[(int)(hit.point.z * 10 / _ground.transform.localScale.z), (int)(hit.point.x * 10 / _ground.transform.localScale.x)].x, _deepDigging, coordinate[(int)(hit.point.z * 10 / _ground.transform.localScale.z), (int)(hit.point.x * 10 / _ground.transform.localScale.x)].z);
+                int intPointZ = (int)(hit.point.z * 10 / _ground.transform.localScale.z);
+                int intPointX = (int)(hit.point.x * 10 / _ground.transform.localScale.x);
+                coordinate[intPointZ, intPointX - 1] = new Vector3(coordinate[intPointZ, intPointX - 1].x, _deepDigging, coordinate[intPointZ, intPointX - 1].z);
+                coordinate[intPointZ, intPointX + 1] = new Vector3(coordinate[intPointZ, intPointX + 1].x, _deepDigging, coordinate[intPointZ, intPointX + 1].z);
+                coordinate[intPointZ - 1, intPointX] = new Vector3(coordinate[intPointZ - 1, intPointX].x, _deepDigging, coordinate[intPointZ - 1, intPointX].z);
+                coordinate[intPointZ + 1, intPointX] = new Vector3(coordinate[intPointZ + 1, intPointX].x, _deepDigging, coordinate[intPointZ + 1, intPointX].z);
+                coordinate[intPointZ + 1, intPointX + 1] = new Vector3(coordinate[intPointZ + 1, intPointX + 1].x, _deepDigging, coordinate[intPointZ + 1, intPointX + 1].z);
+                coordinate[intPointZ - 1, intPointX - 1] = new Vector3(coordinate[intPointZ - 1, intPointX - 1].x, _deepDigging, coordinate[intPointZ - 1, intPointX - 1].z);
+                coordinate[intPointZ, intPointX] = new Vector3(coordinate[intPointZ, intPointX].x, _deepDigging, coordinate[intPointZ, intPointX].z);
                 int k = 0;
                 for (int i = 0; i < Mathf.Sqrt(vertices.Length); i++)
                 {
