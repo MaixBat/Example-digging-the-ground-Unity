@@ -1,7 +1,10 @@
+using System;
 using UnityEngine;
 
 public class AnimatorControl : MonoBehaviour
 {
+    [SerializeField] UseScript _useScript;
+
     MovePlayer _player;
 
     public LopataColor _colorChangeLopata;
@@ -23,9 +26,75 @@ public class AnimatorControl : MonoBehaviour
 
     public void SetHeights()
     {
-        UseScript.Heights[UseScript.PointZStatic, UseScript.PointXStatic] = UseScript.DepthGround;
-        UseScript.Ter.terrainData.SetHeights(0, 0, UseScript.Heights);
-        UseScript.DepthGround -= 0.0001f;
+        int intPointZ = (int)_useScript.PointZ;
+        int intPointX = (int)_useScript.PointX;
+        for (int i = 1; i <= _useScript._radius; i++)
+        {
+            for (int j = 0; j <= _useScript._radius - 1; j++)
+            {
+                try
+                {
+                    if (i != _useScript._radius)
+                    {
+                        if (_useScript.coordinate[intPointZ, intPointX - i].y > _useScript._deepDigging)
+                            _useScript.coordinate[intPointZ, intPointX - i] = new Vector3(_useScript.coordinate[intPointZ, intPointX - i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ, intPointX - i].z);
+                        if (_useScript.coordinate[intPointZ, intPointX + i].y > _useScript._deepDigging)
+                            _useScript.coordinate[intPointZ, intPointX + i] = new Vector3(_useScript.coordinate[intPointZ, intPointX + i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ, intPointX + i].z);
+                        if (_useScript.coordinate[intPointZ - i, intPointX].y > _useScript._deepDigging)
+                            _useScript.coordinate[intPointZ - i, intPointX] = new Vector3(_useScript.coordinate[intPointZ - i, intPointX].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - i, intPointX].z);
+                        if (_useScript.coordinate[intPointZ + i, intPointX].y > _useScript._deepDigging)
+                            _useScript.coordinate[intPointZ + i, intPointX] = new Vector3(_useScript.coordinate[intPointZ + i, intPointX].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + i, intPointX].z);
+                        if (_useScript.coordinate[intPointZ + i, intPointX + i].y > _useScript._deepDigging)
+                            _useScript.coordinate[intPointZ + i, intPointX + i] = new Vector3(_useScript.coordinate[intPointZ + i, intPointX + i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + i, intPointX + i].z);
+                        if (_useScript.coordinate[intPointZ - i, intPointX - i].y > _useScript._deepDigging)
+                            _useScript.coordinate[intPointZ - i, intPointX - i] = new Vector3(_useScript.coordinate[intPointZ - i, intPointX - i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - i, intPointX - i].z);
+                        if (_useScript.coordinate[intPointZ - i, intPointX + i].y > _useScript._deepDigging)
+                            _useScript.coordinate[intPointZ - i, intPointX + i] = new Vector3(_useScript.coordinate[intPointZ - i, intPointX + i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - i, intPointX + i].z);
+                        if (_useScript.coordinate[intPointZ + i, intPointX - i].y > _useScript._deepDigging)
+                            _useScript.coordinate[intPointZ + i, intPointX - i] = new Vector3(_useScript.coordinate[intPointZ + i, intPointX - i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + i, intPointX - i].z);
+                    }
+                    if (_useScript.coordinate[intPointZ - j, intPointX - i].y > _useScript._deepDigging)
+                        _useScript.coordinate[intPointZ - j, intPointX - i] = new Vector3(_useScript.coordinate[intPointZ - j, intPointX - i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - j, intPointX - i].z);
+                    if (_useScript.coordinate[intPointZ + j, intPointX + i].y > _useScript._deepDigging)
+                        _useScript.coordinate[intPointZ + j, intPointX + i] = new Vector3(_useScript.coordinate[intPointZ + j, intPointX + i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + j, intPointX + i].z);
+                    if (_useScript.coordinate[intPointZ - i, intPointX - j].y > _useScript._deepDigging)
+                        _useScript.coordinate[intPointZ - i, intPointX - j] = new Vector3(_useScript.coordinate[intPointZ - i, intPointX - j].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - i, intPointX - j].z);
+                    if (_useScript.coordinate[intPointZ + i, intPointX + j].y > _useScript._deepDigging)
+                        _useScript.coordinate[intPointZ + i, intPointX + j] = new Vector3(_useScript.coordinate[intPointZ + i, intPointX + j].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + i, intPointX + j].z);
+                    if (_useScript.coordinate[intPointZ - i, intPointX + j].y > _useScript._deepDigging)
+                        _useScript.coordinate[intPointZ - i, intPointX + j] = new Vector3(_useScript.coordinate[intPointZ - i, intPointX + j].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - i, intPointX + j].z);
+                    if (_useScript.coordinate[intPointZ + i, intPointX - j].y > _useScript._deepDigging)
+                        _useScript.coordinate[intPointZ + i, intPointX - j] = new Vector3(_useScript.coordinate[intPointZ + i, intPointX - j].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + i, intPointX - j].z);
+                    if (_useScript.coordinate[intPointZ - j, intPointX + i].y > _useScript._deepDigging)
+                        _useScript.coordinate[intPointZ - j, intPointX + i] = new Vector3(_useScript.coordinate[intPointZ - j, intPointX + i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - j, intPointX + i].z);
+                    if (_useScript.coordinate[intPointZ + j, intPointX - i].y > _useScript._deepDigging)
+                        _useScript.coordinate[intPointZ + j, intPointX - i] = new Vector3(_useScript.coordinate[intPointZ + j, intPointX - i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + j, intPointX - i].z);
+                    _useScript._deepDigging -= _useScript._smooth;
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    Debug.Log("OutOfRange");
+                }
+            }
+            //_useScript._deepDigging -= _useScript._smooth;
+        }
+        SetDefaultDepth();
+        if (_useScript.coordinate[intPointZ, intPointX].y > _useScript._deepDigging)
+            _useScript.coordinate[intPointZ, intPointX] = new Vector3(_useScript.coordinate[intPointZ, intPointX].x, _useScript._deepDigging, _useScript.coordinate[intPointZ, intPointX].z);
+        
+        int k = 0;
+        for (int i = 0; i < Mathf.Sqrt(_useScript.vertices.Length); i++)
+        {
+            for (int j = 0; j < Mathf.Sqrt(_useScript.vertices.Length); j++)
+            {
+                _useScript.vertices[k] = _useScript.coordinate[i, j];
+                k++;
+            }
+        }
+        _useScript.mesh.vertices = _useScript.vertices;
+        _useScript.mesh.RecalculateBounds();
+        _useScript._meshCollider.sharedMesh = _useScript.mesh;
+        //_useScript._deepDigging -= -1.7f;
     }
 
     public void ChangeColorOnTransparent()
@@ -40,6 +109,6 @@ public class AnimatorControl : MonoBehaviour
 
     public void SetDefaultDepth()
     {
-        UseScript.DepthGround = UseScript.DefaultDepthGround;
+        _useScript._deepDigging = _useScript._startDeepDigging;
     }
 }
