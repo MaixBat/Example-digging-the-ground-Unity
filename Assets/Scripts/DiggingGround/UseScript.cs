@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UseScript : MonoBehaviour
 {
+    [Range(1, 50)][SerializeField] int _countTile = 20;
+    [SerializeField] int _sizeMesh = 50;
     public float _deepDigging = -0.6f;
     [HideInInspector] public float _startDeepDigging = 0;
     [Range(0,-0.21f)] public float _smooth = -0.1f;
@@ -11,8 +14,8 @@ public class UseScript : MonoBehaviour
     [SerializeField] GameObject _ground;
     private MeshFilter _meshFilter;
     [HideInInspector] public MeshCollider _meshCollider;
-    public Vector3[] vertices;
-    public Vector3[,] coordinate;
+    [HideInInspector] public Vector3[] vertices;
+    [HideInInspector] public Vector3[,] coordinate;
     [HideInInspector] public Mesh mesh;
 
     private MovePlayer _player;
@@ -39,10 +42,17 @@ public class UseScript : MonoBehaviour
         _player = GameObject.FindGameObjectWithTag("Player").GetComponent<MovePlayer>();
         _take = gameObject.GetComponent<ITake>();
 
-        _ground.transform.position = new Vector3(_ground.transform.localScale.x * 5, _ground.transform.position.y, _ground.transform.localScale.z * 5);
         _meshFilter = _ground.GetComponent<MeshFilter>();
         _meshCollider = _ground.GetComponent<MeshCollider>();
-        TestMesh();
+
+        //_ground.transform.localPosition = Vector3.zero;
+        _ground.transform.position = new Vector3(2.5f, _ground.transform.position.y, 2.5f);
+
+        SplittingMesh();
+
+        //GeneretionTale();
+
+        //CombineMesh();
 
         mesh = _meshFilter.mesh;
         vertices = mesh.vertices;
@@ -56,12 +66,12 @@ public class UseScript : MonoBehaviour
         }
     }
 
-    private void TestMesh()
+    private void SplittingMesh()
     {
         List<Vector3> points = new List<Vector3>();
-        for (int i = -50; i <= 50; i++)
+        for (int i = -_sizeMesh; i <= _sizeMesh; i++)
         {
-            for (int j = -50; j <= 50; j++)
+            for (int j = -_sizeMesh; j <= _sizeMesh; j++)
             {
                 points.Add(new Vector3(j * 0.1f, 0, i * 0.1f));
             }
@@ -69,17 +79,17 @@ public class UseScript : MonoBehaviour
 
         List<int> triangles = new List<int>();
 
-        for (int line = 0; line < 100; line++)
+        for (int line = 0; line < _sizeMesh * 2; line++)
         {
-            for (int point = 0; point < 100; point++)
+            for (int point = 0; point < _sizeMesh * 2; point++)
             {
-                triangles.Add(line * 100 + line + point);
-                triangles.Add((line + 1) * 100 + line + 1 + point + 1);
-                triangles.Add(line * 100 + line + point + 1);
+                triangles.Add(line * (_sizeMesh * 2) + line + point);
+                triangles.Add((line + 1) * (_sizeMesh * 2) + line + 1 + point + 1);
+                triangles.Add(line * (_sizeMesh * 2) + line + point + 1);
 
-                triangles.Add((line + 1) * 100 + line + 1 + point);
-                triangles.Add((line + 1) * 100 + line + 1 + point + 1);
-                triangles.Add(line * 100 + line + point);
+                triangles.Add((line + 1) * (_sizeMesh * 2) + line + 1 + point);
+                triangles.Add((line + 1) * (_sizeMesh * 2) + line + 1 + point + 1);
+                triangles.Add(line * (_sizeMesh * 2) + line + point);
             }
         }
 
@@ -89,6 +99,54 @@ public class UseScript : MonoBehaviour
         newmesh.RecalculateNormals();
         _meshFilter.mesh = newmesh;
         _meshCollider.sharedMesh = newmesh;
+    }
+
+    void GeneretionTale()
+    {
+        for (float i = 0.999f; i <= _countTile * 0.999f; i += 0.999f)
+        {
+            for (float j = 0.999f; j <= _countTile * 0.999f; j += 0.999f)
+            {
+                Instantiate(_ground, new Vector3(_ground.transform.position.x + i, _ground.transform.position.y, _ground.transform.position.z + j), Quaternion.identity);
+            }
+        }
+        for (float i = 0.999f; i <= _countTile * 0.999f; i += 0.999f)
+        {
+            Instantiate(_ground, new Vector3(_ground.transform.position.x + i, _ground.transform.position.y, _ground.transform.position.z), Quaternion.identity);
+            Instantiate(_ground, new Vector3(_ground.transform.position.x, _ground.transform.position.y, _ground.transform.position.z + i), Quaternion.identity);
+        }
+    }
+
+    void CombineMesh()
+    {
+        GameObject[] _gm = GameObject.FindGameObjectsWithTag("Ground");
+        MeshFilter[] _meshFilters = new MeshFilter[_gm.Length];
+        int k = 0;
+        foreach (GameObject el in _gm)
+        {
+            _meshFilters[k] = el.GetComponent<MeshFilter>();
+            k++;
+        }
+        CombineInstance[] _combines = new CombineInstance[_meshFilters.Length];
+
+        for (int i = 0; i < _meshFilters.Length; i++)
+        {
+            _combines[i].mesh = _meshFilters[i].mesh;
+            _combines[i].transform = _meshFilters[i].transform.localToWorldMatrix;
+            if (i != 0)
+                Destroy(_meshFilters[i].gameObject);
+        }
+
+        MeshFilter _meshFilter1 = _meshFilter;
+        _meshFilter1.mesh = new Mesh();
+        _meshFilter1.mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        _meshFilter1.mesh.CombineMeshes(_combines);
+
+        _meshFilter.mesh = _meshFilter1.mesh;
+        _meshCollider.sharedMesh = _meshFilter1.mesh;
+
+        _ground.transform.position = Vector3.zero;
+        _ground.transform.localScale = Vector3.one;
     }
 
     void Update()
@@ -127,7 +185,7 @@ public class UseScript : MonoBehaviour
                 }
             }
 
-            if (_hitObject.collider.CompareTag("Ground") && coordinate[(int)(_hitObject.point.z * 10 / _ground.transform.localScale.z), (int)(_hitObject.point.x * 10 / _ground.transform.localScale.x)].y > _deepDigging)
+            if (_hitObject.collider.CompareTag("Ground"))
             {
                 _lopata.transform.LookAt(_player.transform);
                 _lopata.transform.position = new Vector3(_hitObject.point.x, _lopata.transform.position.y, _hitObject.point.z);
@@ -139,6 +197,7 @@ public class UseScript : MonoBehaviour
                 }
                 if (_take.Use() && _player.CheckMove)
                 {
+                    Debug.Log(_hitObject.point);
                     PointZ = _hitObject.point.z * 10 / _ground.transform.localScale.z;
                     PointX = _hitObject.point.x * 10 / _ground.transform.localScale.x;
                     _lopata.transform.position = new Vector3(PointX, _lopata.transform.position.y, PointZ);

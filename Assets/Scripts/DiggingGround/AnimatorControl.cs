@@ -30,44 +30,29 @@ public class AnimatorControl : MonoBehaviour
         int intPointX = (int)_useScript.PointX;
         for (int i = 1; i <= _useScript._radius; i++)
         {
+            if (i == _useScript._radius)
+            {
+                _useScript._deepDigging = -0.1f;
+            }
             for (int j = 0; j <= _useScript._radius - 1; j++)
             {
                 try
                 {
-                    if (i != _useScript._radius)
-                    {
-                        if (_useScript.coordinate[intPointZ, intPointX - i].y > _useScript._deepDigging)
-                            _useScript.coordinate[intPointZ, intPointX - i] = new Vector3(_useScript.coordinate[intPointZ, intPointX - i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ, intPointX - i].z);
-                        if (_useScript.coordinate[intPointZ, intPointX + i].y > _useScript._deepDigging)
-                            _useScript.coordinate[intPointZ, intPointX + i] = new Vector3(_useScript.coordinate[intPointZ, intPointX + i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ, intPointX + i].z);
-                        if (_useScript.coordinate[intPointZ - i, intPointX].y > _useScript._deepDigging)
-                            _useScript.coordinate[intPointZ - i, intPointX] = new Vector3(_useScript.coordinate[intPointZ - i, intPointX].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - i, intPointX].z);
-                        if (_useScript.coordinate[intPointZ + i, intPointX].y > _useScript._deepDigging)
-                            _useScript.coordinate[intPointZ + i, intPointX] = new Vector3(_useScript.coordinate[intPointZ + i, intPointX].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + i, intPointX].z);
-                        if (_useScript.coordinate[intPointZ + i, intPointX + i].y > _useScript._deepDigging)
-                            _useScript.coordinate[intPointZ + i, intPointX + i] = new Vector3(_useScript.coordinate[intPointZ + i, intPointX + i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + i, intPointX + i].z);
-                        if (_useScript.coordinate[intPointZ - i, intPointX - i].y > _useScript._deepDigging)
-                            _useScript.coordinate[intPointZ - i, intPointX - i] = new Vector3(_useScript.coordinate[intPointZ - i, intPointX - i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - i, intPointX - i].z);
-                        if (_useScript.coordinate[intPointZ - i, intPointX + i].y > _useScript._deepDigging)
-                            _useScript.coordinate[intPointZ - i, intPointX + i] = new Vector3(_useScript.coordinate[intPointZ - i, intPointX + i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - i, intPointX + i].z);
-                        if (_useScript.coordinate[intPointZ + i, intPointX - i].y > _useScript._deepDigging)
-                            _useScript.coordinate[intPointZ + i, intPointX - i] = new Vector3(_useScript.coordinate[intPointZ + i, intPointX - i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + i, intPointX - i].z);
-                    }
-                    if (_useScript.coordinate[intPointZ - j, intPointX - i].y > _useScript._deepDigging)
+                    if (_useScript.coordinate[intPointZ - j, intPointX - i].y >= _useScript._deepDigging)
                         _useScript.coordinate[intPointZ - j, intPointX - i] = new Vector3(_useScript.coordinate[intPointZ - j, intPointX - i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - j, intPointX - i].z);
-                    if (_useScript.coordinate[intPointZ + j, intPointX + i].y > _useScript._deepDigging)
+                    if (_useScript.coordinate[intPointZ + j, intPointX + i].y >= _useScript._deepDigging)
                         _useScript.coordinate[intPointZ + j, intPointX + i] = new Vector3(_useScript.coordinate[intPointZ + j, intPointX + i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + j, intPointX + i].z);
-                    if (_useScript.coordinate[intPointZ - i, intPointX - j].y > _useScript._deepDigging)
+                    if (_useScript.coordinate[intPointZ - i, intPointX - j].y >= _useScript._deepDigging)
                         _useScript.coordinate[intPointZ - i, intPointX - j] = new Vector3(_useScript.coordinate[intPointZ - i, intPointX - j].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - i, intPointX - j].z);
-                    if (_useScript.coordinate[intPointZ + i, intPointX + j].y > _useScript._deepDigging)
+                    if (_useScript.coordinate[intPointZ + i, intPointX + j].y >= _useScript._deepDigging)
                         _useScript.coordinate[intPointZ + i, intPointX + j] = new Vector3(_useScript.coordinate[intPointZ + i, intPointX + j].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + i, intPointX + j].z);
-                    if (_useScript.coordinate[intPointZ - i, intPointX + j].y > _useScript._deepDigging)
+                    if (_useScript.coordinate[intPointZ - i, intPointX + j].y >= _useScript._deepDigging)
                         _useScript.coordinate[intPointZ - i, intPointX + j] = new Vector3(_useScript.coordinate[intPointZ - i, intPointX + j].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - i, intPointX + j].z);
-                    if (_useScript.coordinate[intPointZ + i, intPointX - j].y > _useScript._deepDigging)
+                    if (_useScript.coordinate[intPointZ + i, intPointX - j].y >= _useScript._deepDigging)
                         _useScript.coordinate[intPointZ + i, intPointX - j] = new Vector3(_useScript.coordinate[intPointZ + i, intPointX - j].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + i, intPointX - j].z);
-                    if (_useScript.coordinate[intPointZ - j, intPointX + i].y > _useScript._deepDigging)
+                    if (_useScript.coordinate[intPointZ - j, intPointX + i].y >= _useScript._deepDigging)
                         _useScript.coordinate[intPointZ - j, intPointX + i] = new Vector3(_useScript.coordinate[intPointZ - j, intPointX + i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - j, intPointX + i].z);
-                    if (_useScript.coordinate[intPointZ + j, intPointX - i].y > _useScript._deepDigging)
+                    if (_useScript.coordinate[intPointZ + j, intPointX - i].y >= _useScript._deepDigging)
                         _useScript.coordinate[intPointZ + j, intPointX - i] = new Vector3(_useScript.coordinate[intPointZ + j, intPointX - i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ + j, intPointX - i].z);
                     _useScript._deepDigging -= _useScript._smooth;
                 }
