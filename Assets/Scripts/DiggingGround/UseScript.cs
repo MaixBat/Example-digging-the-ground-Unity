@@ -5,16 +5,22 @@ using UnityEngine;
 
 public class UseScript : MonoBehaviour
 {
-    [Range(1, 50)][SerializeField] int _countTile = 20;
-    [SerializeField] int _sizeMesh = 50;
+    // Размер меша
+    [Range(20,127)][SerializeField] int _sizeMesh = 60;
+    // Глубина копания
     public float _deepDigging = -0.6f;
+    // Начальная глубина копания
     [HideInInspector] public float _startDeepDigging = 0;
-    [Range(0,-0.21f)] public float _smooth = -0.1f;
+    // Сглаживание по краям
+    [Range(-1f, 0f)] public float _smooth = -0.1f;
+    // Размер ямы (не трогать, уже настроено)
     [Range(1,20)] public int _radius = 1;
+    // Меш для копания
     [SerializeField] GameObject _ground;
     private MeshFilter _meshFilter;
     [HideInInspector] public MeshCollider _meshCollider;
     [HideInInspector] public Vector3[] vertices;
+    // Двумерный массив координат меша
     [HideInInspector] public Vector3[,] coordinate;
     [HideInInspector] public Mesh mesh;
 
@@ -45,15 +51,12 @@ public class UseScript : MonoBehaviour
         _meshFilter = _ground.GetComponent<MeshFilter>();
         _meshCollider = _ground.GetComponent<MeshCollider>();
 
-        //_ground.transform.localPosition = Vector3.zero;
-        _ground.transform.position = new Vector3(2.5f, _ground.transform.position.y, 2.5f);
+        // Коррекция размеров меша и координат
+        _ground.transform.position = new Vector3(_ground.transform.localScale.x * (_sizeMesh / 10f), _ground.transform.position.y, _ground.transform.localScale.z * (_sizeMesh / 10f));
 
         SplittingMesh();
 
-        //GeneretionTale();
-
-        //CombineMesh();
-
+        // Переводим индексы вершин меша в координаты
         mesh = _meshFilter.mesh;
         vertices = mesh.vertices;
         coordinate = new Vector3[(int)Mathf.Sqrt(vertices.Length), (int)Mathf.Sqrt(vertices.Length)];
@@ -64,6 +67,7 @@ public class UseScript : MonoBehaviour
                 coordinate[i, j] = vertices[(int)(Mathf.Sqrt(vertices.Length) * i + j)];
             }
         }
+        ////////////////////////////////////////////
     }
 
     private void SplittingMesh()
@@ -99,54 +103,6 @@ public class UseScript : MonoBehaviour
         newmesh.RecalculateNormals();
         _meshFilter.mesh = newmesh;
         _meshCollider.sharedMesh = newmesh;
-    }
-
-    void GeneretionTale()
-    {
-        for (float i = 0.999f; i <= _countTile * 0.999f; i += 0.999f)
-        {
-            for (float j = 0.999f; j <= _countTile * 0.999f; j += 0.999f)
-            {
-                Instantiate(_ground, new Vector3(_ground.transform.position.x + i, _ground.transform.position.y, _ground.transform.position.z + j), Quaternion.identity);
-            }
-        }
-        for (float i = 0.999f; i <= _countTile * 0.999f; i += 0.999f)
-        {
-            Instantiate(_ground, new Vector3(_ground.transform.position.x + i, _ground.transform.position.y, _ground.transform.position.z), Quaternion.identity);
-            Instantiate(_ground, new Vector3(_ground.transform.position.x, _ground.transform.position.y, _ground.transform.position.z + i), Quaternion.identity);
-        }
-    }
-
-    void CombineMesh()
-    {
-        GameObject[] _gm = GameObject.FindGameObjectsWithTag("Ground");
-        MeshFilter[] _meshFilters = new MeshFilter[_gm.Length];
-        int k = 0;
-        foreach (GameObject el in _gm)
-        {
-            _meshFilters[k] = el.GetComponent<MeshFilter>();
-            k++;
-        }
-        CombineInstance[] _combines = new CombineInstance[_meshFilters.Length];
-
-        for (int i = 0; i < _meshFilters.Length; i++)
-        {
-            _combines[i].mesh = _meshFilters[i].mesh;
-            _combines[i].transform = _meshFilters[i].transform.localToWorldMatrix;
-            if (i != 0)
-                Destroy(_meshFilters[i].gameObject);
-        }
-
-        MeshFilter _meshFilter1 = _meshFilter;
-        _meshFilter1.mesh = new Mesh();
-        _meshFilter1.mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-        _meshFilter1.mesh.CombineMeshes(_combines);
-
-        _meshFilter.mesh = _meshFilter1.mesh;
-        _meshCollider.sharedMesh = _meshFilter1.mesh;
-
-        _ground.transform.position = Vector3.zero;
-        _ground.transform.localScale = Vector3.one;
     }
 
     void Update()
