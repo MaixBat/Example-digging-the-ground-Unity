@@ -61,7 +61,6 @@ public class AnimatorControl : MonoBehaviour
                     Debug.Log("OutOfRange");
                 }
             }
-            //_useScript._deepDigging -= _useScript._smooth;
         }
         SetDefaultDepth();
         if (_useScript.coordinate[intPointZ, intPointX].y > _useScript._deepDigging)
@@ -79,7 +78,6 @@ public class AnimatorControl : MonoBehaviour
         _useScript.mesh.vertices = _useScript.vertices;
         _useScript.mesh.RecalculateBounds();
         _useScript._meshCollider.sharedMesh = _useScript.mesh;
-        //_useScript._deepDigging -= -1.7f;
     }
 
     public void ChangeColorOnTransparent()

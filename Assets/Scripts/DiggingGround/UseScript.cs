@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class UseScript : MonoBehaviour
 {
+    // Корректор координат
+    [Range(0f, 200f)] public float _correctorZ = 0f;
+    [Range(0f, 200f)] public float _correctorX = 0f;
     // Размер меша
     [Range(20,127)][SerializeField] int _sizeMesh = 60;
     // Глубина копания
@@ -52,17 +55,27 @@ public class UseScript : MonoBehaviour
         _meshCollider = _ground.GetComponent<MeshCollider>();
 
         // Коррекция размеров меша и координат
-        _ground.transform.position = new Vector3(_ground.transform.localScale.x * (_sizeMesh / 10f), _ground.transform.position.y, _ground.transform.localScale.z * (_sizeMesh / 10f));
+        _ground.transform.position = new Vector3(_ground.transform.localScale.x * (_sizeMesh / 10), _ground.transform.position.y, _ground.transform.localScale.z * (_sizeMesh / 10));
 
         SplittingMesh();
+        CreateCoordinates();
+    }
 
+    public void SetDefaultMesh()
+    {
+        SplittingMesh();
+        CreateCoordinates();
+    }
+
+    private void CreateCoordinates()
+    {
         // Переводим индексы вершин меша в координаты
         mesh = _meshFilter.mesh;
         vertices = mesh.vertices;
         coordinate = new Vector3[(int)Mathf.Sqrt(vertices.Length), (int)Mathf.Sqrt(vertices.Length)];
-        for (int i = 0; i < Mathf.Sqrt(vertices.Length); i++)
+        for (int i = 0; i < (int)Mathf.Sqrt(vertices.Length); i++)
         {
-            for (int j = 0; j < Mathf.Sqrt(vertices.Length); j++)
+            for (int j = 0; j < (int)Mathf.Sqrt(vertices.Length); j++)
             {
                 coordinate[i, j] = vertices[(int)(Mathf.Sqrt(vertices.Length) * i + j)];
             }
@@ -153,9 +166,8 @@ public class UseScript : MonoBehaviour
                 }
                 if (_take.Use() && _player.CheckMove)
                 {
-                    Debug.Log(_hitObject.point);
-                    PointZ = _hitObject.point.z * 10 / _ground.transform.localScale.z;
-                    PointX = _hitObject.point.x * 10 / _ground.transform.localScale.x;
+                    PointZ = _hitObject.point.z * 10 / _ground.transform.localScale.z - _correctorZ;
+                    PointX = _hitObject.point.x * 10 / _ground.transform.localScale.x - _correctorX;
                     _lopata.transform.position = new Vector3(PointX, _lopata.transform.position.y, PointZ);
                     _lopata.GetComponent<Animator>().Play("Digging");
                     _player.CheckMove = false;
