@@ -6,10 +6,11 @@ public class ObjectTakeOnScene : MonoBehaviour
 {
     [SerializeField] GameObject _takeObj;
     [SerializeField] GameObject _localTake;
-    ITake _take;
-    GameObject _tempObj;
-    Transform[] _children;
-    Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>{};
+
+    private ITake _take;
+    private GameObject _tempObj;
+    private Transform[] _children;
+    private Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>{};
 
     public void Awake()
     {

@@ -6,6 +6,7 @@ public class DiggingSimple : MonoBehaviour
     [SerializeField] float _deepDigging = -0.1f;
     [SerializeField] GameObject _camera;
     [SerializeField] GameObject _ground;
+
     private MeshFilter _meshFilter;
     private MeshCollider _meshCollider;
     private Vector3[] vertices;

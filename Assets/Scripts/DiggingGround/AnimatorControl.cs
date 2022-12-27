@@ -1,13 +1,14 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 public class AnimatorControl : MonoBehaviour
 {
-    [SerializeField] UseScript _useScript;
-
-    MovePlayer _player;
+    [SerializeField] UseScript _useScript; // Здесь используется для системы копания
 
     public LopataColor _colorChangeLopata;
+
+    private MovePlayer _player;
+
 
     private void Awake()
     {
@@ -24,6 +25,7 @@ public class AnimatorControl : MonoBehaviour
         _player.CheckMove = false;
     }
 
+    // Метод для выкапывания меша (всё что находится в этом блоке принадлежит к системе копания)
     public void SetHeights()
     {
         int intPointZ = (int)_useScript.PointZ;
@@ -38,6 +40,7 @@ public class AnimatorControl : MonoBehaviour
             {
                 try
                 {
+                    // Условия для проверки высоты точки копания (если уже выкопано, то не перекапывать)
                     if (_useScript.coordinate[intPointZ - j, intPointX - i].y >= _useScript._deepDigging)
                         _useScript.coordinate[intPointZ - j, intPointX - i] = new Vector3(_useScript.coordinate[intPointZ - j, intPointX - i].x, _useScript._deepDigging, _useScript.coordinate[intPointZ - j, intPointX - i].z);
                     if (_useScript.coordinate[intPointZ + j, intPointX + i].y >= _useScript._deepDigging)
@@ -79,6 +82,7 @@ public class AnimatorControl : MonoBehaviour
         _useScript.mesh.RecalculateBounds();
         _useScript._meshCollider.sharedMesh = _useScript.mesh;
     }
+    ////////////////////////////////////////////////////////////////
 
     public void ChangeColorOnTransparent()
     {
@@ -90,8 +94,10 @@ public class AnimatorControl : MonoBehaviour
         _colorChangeLopata.ChangeOnNormal();
     }
 
+    // Всё что находится в этом блоке принадлежит к системе копания
     public void SetDefaultDepth()
     {
         _useScript._deepDigging = _useScript._startDeepDigging;
     }
+    //////////////////////////////////
 }
