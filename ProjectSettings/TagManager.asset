@@ -8,6 +8,21 @@ TagManager:
   - Ground
   - Take
   - PlaceDigging
+  - Stone
+  - TakeObject
+  - Heading
+  - RocksContainer
+  - PreviewCamera
+  - PreviewCanvasBackground
+  - Description
+  - PreviewCanvas
+  - RegionsMap
+  - Inventory
+  - MainCanvas
+  - BackgroudMesh
+  - Collector
+  - Deformer
+  - UndergroundWall
   layers:
   - Default
   - TransparentFX

@@ -5,26 +5,6 @@ public class AnimatorControl : MonoBehaviour
 {
     [SerializeField] UseScript _useScript; // Здесь используется для системы копания
 
-    public LopataColor _colorChangeLopata;
-
-    private MovePlayer _player;
-
-
-    private void Awake()
-    {
-        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<MovePlayer>();
-    }
-
-    public void CheckMoveTrue()
-    {
-        _player.CheckMove = true;
-    }
-
-    public void CheckMoveFalse()
-    {
-        _player.CheckMove = false;
-    }
-
     // Метод для выкапывания меша (всё что находится в этом блоке принадлежит к системе копания)
     public void SetHeights()
     {
@@ -83,16 +63,6 @@ public class AnimatorControl : MonoBehaviour
         _useScript._meshCollider.sharedMesh = _useScript.mesh;
     }
     ////////////////////////////////////////////////////////////////
-
-    public void ChangeColorOnTransparent()
-    {
-        _colorChangeLopata.ChangeOnTransparent();
-    }
-
-    public void ChangeColorOnNormal()
-    {
-        _colorChangeLopata.ChangeOnNormal();
-    }
 
     // Всё что находится в этом блоке принадлежит к системе копания
     public void SetDefaultDepth()
